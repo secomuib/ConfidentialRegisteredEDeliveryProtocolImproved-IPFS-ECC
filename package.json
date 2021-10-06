@@ -1,0 +1,71 @@
+{
+  "name": "patent_confidential_edelivery_without_ttp",
+  "version": "1.0.0",
+  "description": "Protocol pel 2n article de IEEE Access (eDelivery confidencial multipart sense TTP) per la patent, amb interfície web ReactJS",
+  "homepage": "https://secomuib.github.io/PatentConfidentialEDeliveryWithoutTTP/",
+  "main": "start.js",
+  "directories": {
+    "doc": "doc",
+    "test": "test"
+  },
+  "scripts": {
+    "ethereum_compile": "node compile.js",
+    "ethereum_deploy": "node deploy.js",
+    "ethereum_test": "mocha",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/secomuib/PatentConfidentialEDeliveryWithoutTTP.git"
+  },
+  "keywords": [
+    "ethereum",
+    "solidity",
+    "blockchain"
+  ],
+  "author": "Seguretat i comerç electrònic (SECOM)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/secomuib/PatentConfidentialEDeliveryWithoutTTP/issues"
+  },
+  "private": true,
+  "dependencies": {
+    "@truffle/hdwallet-provider": "^1.5.0",
+    "big-integer": "^1.6.43",
+    "dateformat": "^3.0.3",
+    "elgamal": "^0.3.0",
+    "fs-extra": "^6.0.1",
+    "ganache-cli": "^6.12.2",
+    "gh-pages": "^2.2.0",
+    "mocha": "^8.4.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^3.4.1",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^0.88.2",
+    "solc": "^0.4.26",
+    "truffle-hdwallet-provider": "0.0.3",
+    "web3": "1.0.0-beta.26"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "ipfs-http-client": "^53.0.1"
+  }
+}
