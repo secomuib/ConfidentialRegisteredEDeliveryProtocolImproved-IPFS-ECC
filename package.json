@@ -37,8 +37,11 @@
   "dependencies": {
     "@truffle/hdwallet-provider": "^1.5.0",
     "big-integer": "^1.6.43",
+    "bn.js": "^5.2.0",
+    "buffer-xor": "^2.0.2",
     "dateformat": "^3.0.3",
     "elgamal": "^0.3.0",
+    "elliptic": "^6.5.4",
     "fs-extra": "^6.0.1",
     "ganache-cli": "^6.12.2",
     "gh-pages": "^2.2.0",

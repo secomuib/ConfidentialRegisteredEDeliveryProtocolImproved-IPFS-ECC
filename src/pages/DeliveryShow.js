@@ -51,7 +51,7 @@ class DeliveryShow extends Component {
       let c1 = await deliveryContract.methods.c1().call();
       let c2 = await deliveryContract.methods.c2().call();
       
-      //Obtain c2 form IPFS
+      //Obtain c2 from IPFS
       const response = await fetch('https://ipfs.infura.io:5001/api/v0/cat?arg='+c2);
       c2 = await response.text();
 

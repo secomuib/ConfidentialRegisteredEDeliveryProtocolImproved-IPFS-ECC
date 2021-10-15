@@ -1,168 +1,193 @@
 const assert = require('assert');
-const ganache = require('ganache-cli');
-const Web3 = require('web3');
-const web3 = new Web3(ganache.provider());
-const ElGamal = require('elgamal');
+
+const EC = require('elliptic').ec;
+const elliptic = require ('elliptic');
 const bigInt = require("big-integer");
 
-const compiledFactoryPath = '../src/ethereum/build/ConfidentialMultipartyRegisteredEDeliveryWithoutTTPFactory.json';
-const compiledDeliveryPath = '../src/ethereum/build/ConfidentialMultipartyRegisteredEDeliveryWithoutTTP.json';
-const compiledFactory = require(compiledFactoryPath);
-const compiledDelivery = require(compiledDeliveryPath);
+var xor = require('buffer-xor');
 
-let factoryContract;
-let deliveryContract;
-let deliveryContractAddress;
-let accounts; 
+/*const formatBigIntToHex = n => {
+  // Per assegurar que té una longitud parell (si no, dóna error)
+  if (n.toString(16).length % 2 === 0) {
+    return `0x${n.toString(16)}`;
+  } else {
+    return `0x0${n.toString(16)}`;
+  }
+};*/
 
-const NUMBER_BITS = 512;
-const MESSAGE = "Hola, com va tot?";
+// Convert a hex string to a byte array
+/*function hexToBytes(hex) {
+  for (var bytes = [], c = 0; c < hex.length; c += 2)
+  bytes.push(parseInt(hex.substr(c, 2), 16));
+  return bytes;
+}
 
-let elgamal, p, g, q, xa, ya, r, messageSent, c1, c2;
-let c, s, xb, yb, z1, z2;
-let w;
+// Convert a byte array to a hex string
+function bytesToHex(bytes) {
+  for (var hex = [], i = 0; i < bytes.length; i++) {
+      var current = bytes[i] < 0 ? bytes[i] + 256 : bytes[i];
+      hex.push((current >>> 4).toString(16));
+      hex.push((current & 0xF).toString(16));
+  }
+  return hex.join("");
+}*/
 
-// To prevent warning "MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 data listeners added. Use emitter.setMaxListeners() to increase limit"
-require('events').EventEmitter.defaultMaxListeners = 0;
+//Create and initialize EC context
+const ec = new EC('secp256k1');
 
-beforeEach(async () => {
-  // VARIABLES FOR CREATE()
-  // Generation of p, g, q of ElGamal algorithm
-  elgamal = await ElGamal.default.generateAsync(NUMBER_BITS);
-  p = bigInt(elgamal.p.toString());
-  g = bigInt(elgamal.g.toString());
-  q = p.minus(1).divide(2);
 
-  // Generation of xa, ya, private and public keys of A
-  // ya = g^xa mod p
-  xa = bigInt.randBetween(2, q.minus(1));
-  ya = g.modPow(xa, p);
-  
-  // Generation of random number r
-  r = bigInt.randBetween(2, q.minus(1));
-  
-  let messageSentBuffer = Buffer.from(MESSAGE, 'utf8');
-  messageSent = bigInt(messageSentBuffer.toString('hex'), 16);
+//Generate keys
+const keySender = ec.genKeyPair();
+const a = keySender.getPrivate('hex');
+console.log(a);
+const aBig = bigInt(a, 16)
 
-  // Generation of C1 = g^r mod p
-  c1 = g.modPow(r, p);
+const A = keySender.getPublic();
+console.log('A', A)
 
-  // Generation of C2 = m·ya^r mod p
-  c2 = messageSent.multiply(ya.modPow(r, p));
+const Ax = keySender.getPublic().getX().toString(16);
+console.log('Ax', Ax)
+const Ay = keySender.getPublic().getY();
 
-  // VARIABLES FOR ACCEPT()
-  // Generation of challenge number c
-  c = bigInt.randBetween(2, q.minus(1));      // Pot ser mes curt, meitat de bits
-  
-  // Generation of random number s
-  s = bigInt.randBetween(2, q.minus(1));
+const keyReceiver = ec.genKeyPair();
+const b = keyReceiver.getPrivate('hex');
+console.log(b)
+const bBig = bigInt(b,16)
+console.log('b', b);
+console.log('bBig', bBig);
+console.log('bBig hex', bBig.toString(16))
+const B = keyReceiver.getPublic('hex');
+const Bx = keyReceiver.getPublic().getX();
+const By = keyReceiver.getPublic().getY();
 
-  // Generation of xb, yb, private and public keys of B
-  // yb = g^xb mod p
-  xb = bigInt.randBetween(2, q.minus(1));
-  yb = g.modPow(xb, p);
+let G = ec.g;
+let Gx = ec.g.x;
+const Gy = ec.g.y;
+const N = ec.n;
 
-  // Generation of z1 = g^s mod p
-  z1 = g.modPow(s, p);
-  // Generation of z2 = xb·ya^s mod p
-  z2 = xb.multiply(ya.modPow(s, p));
+//Definim missatge
+const message = 'Hola, bon dia!'
+const messageSentBuffer = Buffer.from(message, 'utf8');
+console.log(`Message: 0x${messageSentBuffer.toString('hex')}`);
+console.log(messageSentBuffer)
+const messageSentHex = messageSentBuffer.toString('hex');
+console.log(messageSentHex);
 
-  // VARIABLES FOR FINISH()
-  //const w = r.add(c.mod(p).multiply(xb.mod(p)).mod(p));
-  w =  r.add(c.multiply(xb.mod(p)));
+//ALICE
+//1. Generam v 
+let v = elliptic.rand(32);
+console.log('v:', v);
 
-  accounts = await web3.eth.getAccounts();
+const vHex = v.toString('hex');
+console.log('vHex: ', vHex);
 
-  factoryContract = await new web3.eth.Contract(JSON.parse(compiledFactory.interface))
-    .deploy({ data: compiledFactory.bytecode, arguments: [] })
-    .send({ from: accounts[0], gas: '6000000' });
+//2. Calcula Vx, Vy --> vxG
+const V = G.mul(v);
+const Vx = V.getX();
+const Vy = V.getY();
 
-  await factoryContract.methods
-    .createDelivery([accounts[1],accounts[2]], "0x"+c1.toString(16), "0x"+c2.toString(16), "0x"+ya.toString(16), "0x"+g.toString(16), "0x"+p.toString(16), 600, 1200)
-    .send({ from: accounts[0], gas: '6000000', value: '100' });
 
-  const addresses = await factoryContract.methods.getDeliveries().call();
-  deliveryContractAddress = addresses[0];
+//3. Xifra m
+const C = xor(v, messageSentBuffer);
+console.log('C:', C);
 
-  deliveryContract = await new web3.eth.Contract(JSON.parse(compiledDelivery.interface), deliveryContractAddress);
-});
+//BOB
+//1. Genera s
+const s = elliptic.rand(32);
+console.log('s', s)
+const sHex = s.toString('hex');
+console.log('sHex', sHex)
 
-describe('Certified eDelivery Contract', () => {
-  it('deploys a factory and a delivery', () => {
-    assert.ok(factoryContract.options.address);
-    assert.ok(deliveryContract.options.address);
-  });
+//2. Calcula Z1, Z2:
+//let Z1 = G.mul(s).getX();
+let Z1 = G.mul(s);
+console.log('Z1', Z1);
 
-  it("non receivers can't accept delivery", async function() {
-    try { 
-      await deliveryContract.methods
-        .accept("0x"+z1.toString(16), "0x"+z2.toString(16), "0x"+yb.toString(16), "0x"+c.toString(16))
-        .send({ from: accounts[3], gas: '6000000' });
-      assert(false);
-    } catch (err) {
-      assert(err);
-    } 
-  });
 
-  it("receiver can accept delivery", async function() {
-    await deliveryContract.methods
-      .accept("0x"+z1.toString(16), "0x"+z2.toString(16), "0x"+yb.toString(16), "0x"+c.toString(16))
-      .send({ from: accounts[1], gas: '6000000' });
-    let state = await deliveryContract.methods.getState(accounts[1]).call();
-    assert.equal(state, "accepted");
-  });
+let Z1encode = Z1.encode('hex');
+console.log('Z1encode', Z1encode);
+var curve = elliptic.curves.secp256k1.curve;
+/*var prova = new elliptic.curve.short({
+  p: '1d',
+  a: '4',
+  b: '14',
+})*/
+let provaDecode = curve.decodePoint(Z1encode, 'hex')
+console.log('provaDecode', provaDecode);
 
-  it("non sender can't finish delivery", async function() {
-    await deliveryContract.methods
-      .accept("0x"+z1.toString(16), "0x"+z2.toString(16), "0x"+yb.toString(16), "0x"+c.toString(16))
-      .send({ from: accounts[1], gas: '6000000' });
-    await deliveryContract.methods
-      .accept("0x"+z1.toString(16), "0x"+z2.toString(16), "0x"+yb.toString(16), "0x"+c.toString(16))
-      .send({ from: accounts[2], gas: '6000000' });
-    try { 
-      await deliveryContract.methods
-        .finish(accounts[1], "0x"+w.toString(16))
-        .send({ from: accounts[3], gas: '6000000' });
-      assert(false);
-    } catch (err) {
-      assert(err);
-    } 
-  });
+let Z1Big = bigInt(provaDecode.getX().toString(16), 16);
+console.log('Z1', Z1);
+console.log('Z1Big', Z1Big);
 
-  it("sender can finish delivery", async function() {
-    await deliveryContract.methods
-      .accept("0x"+z1.toString(16), "0x"+z2.toString(16), "0x"+yb.toString(16), "0x"+c.toString(16))
-      .send({ from: accounts[1], gas: '6000000' });
-    await deliveryContract.methods
-      .accept("0x"+z1.toString(16), "0x"+z2.toString(16), "0x"+yb.toString(16), "0x"+c.toString(16))
-      .send({ from: accounts[2], gas: '6000000' });
-    await deliveryContract.methods
-      .finish(accounts[1], "0x"+w.toString(16))
-      .send({ from: accounts[0], gas: '6000000' });
-    let state = await deliveryContract.methods.getState(accounts[1]).call();
-    assert.equal(state, "finished");
-  });
 
-  it("received message is correct", async function() {
-    await deliveryContract.methods
-      .accept("0x"+z1.toString(16), "0x"+z2.toString(16), "0x"+yb.toString(16), "0x"+c.toString(16))
-      .send({ from: accounts[1], gas: '6000000' });
-    await deliveryContract.methods
-      .accept("0x"+z1.toString(16), "0x"+z2.toString(16), "0x"+yb.toString(16), "0x"+c.toString(16))
-      .send({ from: accounts[2], gas: '6000000' });
-    await deliveryContract.methods
-      .finish(accounts[1], "0x"+w.toString(16))
-      .send({ from: accounts[0], gas: '6000000' });
+const Z2 = A.mul(s);
+console.log('Z2: ', Z2);
+const Z2Big = bigInt(Z2.getX().toString(16),16)
+console.log('Z2Big', Z2Big)
+const xorZ2 = Z2Big.xor(bBig)
+console.log('xorZ2', xorZ2)
 
-    let _c2 = bigInt((await deliveryContract.methods.c2().call()).substr(2), 16);
-    let _ya = bigInt((await deliveryContract.methods.ya().call()).substr(2), 16);
-    let _p = bigInt((await deliveryContract.methods.p().call()).substr(2), 16);
-    let _w = bigInt((await deliveryContract.methods.getW(accounts[1]).call()).substr(2), 16);
+//3. Genera c
+const c = elliptic.rand(32);
+console.log(c);
+//ALICE 
+//1. Desxifratge bi
+const b1 = provaDecode.mul(a)
+console.log('b1', b1.getX().toString(16))
+const b1Big = bigInt(b1.getX().toString(16),16);
+console.log('b1:', b1Big);
 
-    let _r = _w.subtract(c.multiply(xb.mod(_p)));  // r = w-c*xb mod q
+const bi = xorZ2.xor(b1Big);
+console.log('bi', bi);
+console.log('bi hex', bi.toString(16))
 
-    const messageReceived = _c2.divide(_ya.modPow(_r, _p));
-    const messageReceivedBuffer = Buffer.from(messageReceived.toString(16), 'hex');
-    assert.equal(messageReceivedBuffer, MESSAGE);
-  });
-});
+//Calcula r
+console.log('v', v);
+console.log('vHex', vHex)
+const vBig = bigInt(vHex, 16);
+console.log('vBig', vBig);
+
+const biHex = bi.toString(16);
+console.log('biHex', biHex)
+const biBig = bigInt(biHex, 16);
+console.log('biBig', biBig);
+
+const cHex = c.toString('hex');
+const cBig = bigInt(cHex, 16);
+console.log('cBig', cBig);
+
+console.log('N', N)
+
+const NBig = bigInt(N, 16)
+
+let r = vBig.subtract(biBig.multiply(cBig.mod(NBig)));
+console.log('r', r);
+
+//BOB
+//1. Calcula
+//const bHex = b.toString('hex');
+//console.log('bHex', bHex)
+//const bBig = bigInt(bHex, 16);
+//console.log('bBig', bBig);
+const vBob = r.add(bBig.multiply(cBig.mod(NBig)));
+console.log('vBob', vBob);
+//2. Desxifra 
+const stringv = vBob.toString(16);
+console.log('stringv: ',stringv)
+const vBuffer = Buffer.from(stringv, 'hex');
+
+console.log('vBuffer', vBuffer, 'c', C);
+const mBob = xor(vBuffer, C);
+console.log(mBob.toString());
+
+//prova desxifram C
+//const provaDesxifratge = xor(v, C);
+//console.log(provaDesxifratge.toString());
+/*console.log('public',keySender.getPublic())
+const x = keySender.getPublic().getX().toString("hex");
+console.log('x', x)
+
+const y = keySender.getPublic().getY().toString("hex");
+console.log('y', y)
+const provaPublic = ec.keyFromPublic({x,y})
+console.log(provaPublic.getPublic())*/

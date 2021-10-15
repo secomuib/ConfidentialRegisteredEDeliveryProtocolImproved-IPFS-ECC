@@ -8,6 +8,12 @@ import variables from '../ethereum/variables';
 const bigInt = require("big-integer");
 const dateFormat = require('dateformat');
 
+const EC = require ('elliptic').ec;
+const elliptic = require ('elliptic');
+
+//Create and initialize EC context
+const ec = new EC('secp256k1');
+
 class DeliveryRow extends Component {
   state = {
     receiver: '',
@@ -44,8 +50,7 @@ class DeliveryRow extends Component {
   };
 
   onAccept = async (contractAddress) => {
-
-    let c, s, z1, z2;
+    let c, s, Z1, Z2;
 
     this.setState({ loading: true, errorMessage: '' });
 
@@ -54,31 +59,72 @@ class DeliveryRow extends Component {
 
       const accounts = await web3.eth.getAccounts();
 
-      // q of ElGamal algorithm
-      // TODO: Com ho podem saber?
-      let q = bigInt(variables.q.substr(2), 16);
-      let xb = bigInt(variables.xb.substr(2), 16);
-      let yb = bigInt(variables.yb.substr(2), 16);
+      const formatBigIntToHex = n => {
+        // Per assegurar que té una longitud parell (si no, dóna error)
+        if (n.toString(16).length % 2 === 0) {
+          return `0x${n.toString(16)}`;
+        } else {
+          return `0x0${n.toString(16)}`;
+        }
+      };
 
-      let p = bigInt((await deliveryContract.methods.p().call()).substr(2), 16);
-      let g = bigInt((await deliveryContract.methods.g().call()).substr(2), 16);
-      let ya = bigInt((await deliveryContract.methods.ya().call()).substr(2), 16);
+      let B = variables.B;
+      let b = variables.b;
 
-      // VARIABLES FOR ACCEPT()
-      // Generation of challenge number c
-      c = bigInt.randBetween(2, q.minus(1));      // Pot ser mes curt, meitat de bits
-      
-      // Generation of random number s
-      s = bigInt.randBetween(2, q.minus(1));
+      let hashIPFS = await deliveryContract.methods.hashIPFS().call();
+      console.log(hashIPFS)
+      let A = (await deliveryContract.methods.A().call()).substr(2);
+      console.log('A', A);
+      // A descerialization
+      var curve = elliptic.curves.secp256k1.curve;
+      A = curve.decodePoint(A, 'hex');
 
-      // Generation of z1 = g^s mod p
-      z1 = g.modPow(s, p);
-      // Generation of z2 = xb·ya^s mod p
-      z2 = xb.multiply(ya.modPow(s, p));
-      
-      await deliveryContract.methods
-        .accept("0x"+z1.toString(16), "0x"+z2.toString(16), "0x"+yb.toString(16), "0x"+c.toString(16))
-        .send({ from: accounts[0] });
+      // Genera s: 
+      s = elliptic.rand(32)
+
+      // Calcula Z1 = Gx[si];
+      Z1 = ec.g.mul(s);
+      console.log('Z1', Z1);
+      // Calcula Z2 = (Ax[si]) XOR (bi)
+      Z2 = A.mul(s);
+      //Passam el resultat a bigInt per poder calcular la XOR
+      Z2 = bigInt(Z2.getX().toString(16),16)
+
+      //Passam b a bigInt
+      console.log('b hex', b)
+      b = bigInt(b, 16)
+      console.log('b bigInt', b)
+
+
+      //Feim la XOR de Z2 amb bi
+      Z2 = Z2.xor(b)
+
+      // Genera c: 
+      c = elliptic.rand(32);
+      console.log('c', c);
+
+      // Serialització Z1
+      Z1 = Z1.encode('hex');
+      console.log('Z1', Z1);
+
+      var curve = elliptic.curves.secp256k1.curve;
+      const Z1decode = curve.decodePoint(Z1, 'hex');
+      console.log('Z1', Z1decode);
+
+      // Passam c a hexadecimal:
+      c = Buffer.from(c).toString("hex");
+      console.log(c);
+      let cBig = bigInt(c, 16);
+      console.log('cBig', cBig);
+
+      // Obtenim les coordenades x i y de la clau pública del receptor
+      const receiverPublicKeyX = B.getX();
+      const receiverPublicKeyY = B.getY();
+
+      // Execució mètode accept() de l'smart contract
+      await deliveryContract.methods.accept("0x"+Z1, "0x"+Z2.toString(16), formatBigIntToHex(receiverPublicKeyX), formatBigIntToHex(receiverPublicKeyY), 
+      "0x"+c).send({from: accounts[0]});
+     
 
       // Refresh
       alert('Delivery accepted!');
@@ -93,7 +139,6 @@ class DeliveryRow extends Component {
   onFinish = async (contractAddress) => {
 
     let w;
-
     this.setState({ loading: true, errorMessage: '' });
 
     try {
@@ -101,24 +146,63 @@ class DeliveryRow extends Component {
 
       const accounts = await web3.eth.getAccounts();
 
-      // Random number r
-      let r = bigInt(variables.r.substr(2), 16)
-      // xb private key of B
-      // TODO: Com ho podem saber?
-      let xb = bigInt(variables.xb.substr(2), 16)
+      const formatBigIntToHex = n => {
+        // Per assegurar que té una longitud parell (si no, dóna error)
+        if (n.toString(16).length % 2 === 0) {
+          return `0x${n.toString(16)}`;
+        } else {
+          return `0x0${n.toString(16)}`;
+        }
+      };
 
+      let a = variables.a;
+      console.log('a', a);
+
+      //Obté Z1, Z2, N i c que ha generat el receptor
       let receiver = await deliveryContract.methods.receivers(0).call();
-      let p = bigInt((await deliveryContract.methods.p().call()).substr(2), 16);
-      let c = bigInt(((await deliveryContract.methods.receiversState(receiver).call()).c).substr(2), 16);
+      let Z1 = ((await deliveryContract.methods.receiversState(receiver).call()).z1).substr(2);
+      let Z2 = ((await deliveryContract.methods.receiversState(receiver).call()).z2).substr(2);
+      let c = (await deliveryContract.methods.receiversState(receiver).call()).c;
+      console.log(Z1, Z2, c);
+      
+      Z2 = bigInt(Z2, 16);
+      console.log(typeof(c));
 
-      // VARIABLES FOR FINISH()
-      //const w = r.add(c.mod(p).multiply(xb.mod(p)).mod(p));
-      
-      w =  r.add(c.multiply(xb.mod(p)));
-      
-      await deliveryContract.methods
-        .finish(receiver, "0x"+w.toString(16))
-        .send({ from: accounts[0] });
+      //Deserialització Z1, Z2
+      var curve = elliptic.curves.secp256k1.curve;
+      Z1 = curve.decodePoint(Z1, 'hex');
+      console.log('Z1', Z1);
+
+      //Passam c a bigInt
+      c = bigInt(c);
+      console.log('c', c)
+
+      //Desxifra b
+      const b1 = Z1.mul(a)
+      console.log('b1', b1.getX().toString(16))
+      const b1Big = bigInt(b1.getX().toString(16),16);
+      console.log('b1:', b1Big);
+
+      const bi = Z2.xor(b1Big);
+      console.log('bi', bi);
+      console.log('bi hex', bi.toString(16))
+
+      //Obtenim n de 'secp256k1' i ho passam a bigInt
+      const NBig = bigInt(ec.n, 16)
+
+      //Obtenim v
+      let v = variables.v;
+      v = v.toString('hex');
+      v = bigInt(v, 16)
+
+      //Calcula r = v-b*c mod(n)
+      let r = v.subtract(bi.multiply(c.mod(NBig)));
+      console.log(r.toString(16))
+      console.log('r', formatBigIntToHex(r))
+      console.log(r.length)
+      /*await deliveryContract.methods
+        .finish(receiver, "0x"+r.toString(16))
+        .send({ from: accounts[0] });*/
 
       // Refresh
       alert('Delivery finished!');

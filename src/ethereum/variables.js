@@ -1,20 +1,44 @@
-const p = '0xfabb9ab2f0b94831ce41fef46a3e1e0af4f0c30be6a20c6294cf0ed0243d9990b69794b02c7a04c1c34fa4ac36278a9d12805d1e136290d7c9661cc773eca0ef';
-const g = '0x741b99e8d3e6197266cdb8573abbaf241f4d477abeca34889883534d2f6eeb59ffdd3dde12d31be92a9b873df01ed2bf86fc8b5d87ced1b9691cb7f1e9214c8d';
-const q = '0x7d5dcd59785ca418e720ff7a351f0f057a786185f35106314a678768121eccc85b4bca58163d0260e1a7d2561b13c54e89402e8f09b1486be4b30e63b9f65077';
-const xa = '0x171896f638c47b6cb040b7108094a63ee0d427f0918c1f14106589c66e4199e8e0680cd199b676297013a83cdac90f48e00e6dfd1db2e14d0752ab9f65c34099';
-const ya = '0xf700332eaec7576cd02ef93d10c86428ced3f00bd67c69ed997dd4311f7b5dded395c8c4c14340b18099febeaf693fbe1926d79ed8613edb495032f0c4531e7c';
-const r = '0x4677e52e4deb555e3b2356d8a980055283cf94498d02473b28aa56357bcf29cb4e15e419bd8fc337714464dee817e2608dc39981db3ad0f527f2559bdb541827';
-const xb = '0xdafb1fb2f431fdee71309df79b8a15578fe5e6403f82120aa8ba89ed3a093e80ca707ba96ff8499b11002833961aaa7d47152dc4f8c6b4881c2ffffa8563f9';
-const yb = '0x3235c538fd584e4d9089080ccdf7e75a7747bf9e5608965c83877672f9603804649224aff820b662ab6f42331a78138499203e12afeddfdf98f21c3afe099bde';
+const EC = require ('elliptic').ec;
+const elliptic = require ('elliptic');
+
+//Create and initialize EC context
+const ec = new EC('secp256k1');
+
+//Generate keys
+let a ="ae61751418647e9a8562bc272903ecdcb4bf31da19242d4e1163a9a8acc41af8";
+let A = "04583d16265551f1f2ef5716dff302fa96e5e337ea87ca35d10d7b1c208b98ba7ea517781a35547fefad9a3ab0f3f725c91c3abcbab17ab4071057a8a543bfa044";
+console.log('a')
+console.log(a);
+console.log(A);
+
+let b = "5a8f75926cdbf4d45baa120b3fb57950f63ff0daab64609036260367bc6441dc";
+let B = "04f2281c345b678735ba943456818fa08ae4a0bb4c8969d97d5047cb79a23ec1426582005e9aed4659c722248143d752be52936cf88fe2d4908a2680562205ae0c";
+console.log(b);
+console.log(B);
+
+//Passam A i B a l'objecte Key
+var curve = elliptic.curves.secp256k1.curve;
+A = curve.decodePoint(A, 'hex');
+console.log('A', A);
+B = curve.decodePoint(B, 'hex');
+console.log('B', B);
+
+let v = "b97199d608cdc1362db9d22867be00d0b75feda82a8681b630cdf23264ec52b1"
+v = Buffer.from(v);
+
+const Gx = ec.g.x;
+const Gy = ec.g.y;
+const N = ec.n;
+console.log('N', N);
 
 export default {
-  p  : p ,
-  g  : g ,
-  q  : q ,
-  xa : xa,
-  ya : ya,
-  r  : r ,
-  xb : xb,
-  yb : yb
+  a  : a ,
+  A  : A,
+  b : b,
+  B : B,
+  v : v,
+  Gx : Gx,
+  Gy : Gy, 
+  N : N
 }
 

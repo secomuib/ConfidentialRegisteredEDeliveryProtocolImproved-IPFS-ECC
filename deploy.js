@@ -19,7 +19,7 @@ const deploy = async () => {
 
   const result = await new web3.eth.Contract(JSON.parse(compiledFactory.interface))
     .deploy({ data: compiledFactory.bytecode, arguments: [] })
-    .send({ from: accounts[0], gas: '8000000' });
+    .send({ from: accounts[0], gas: '8000000', gasPrice: '20000000000' });
 
   //fs.writeFileSync('./CONTRACTADDRESS', result.options.address);
   compiledFactory.address = result.options.address;
