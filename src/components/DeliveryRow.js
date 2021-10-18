@@ -4,6 +4,7 @@ import { Table, Button, Icon, Message, Label } from 'semantic-ui-react';
 import web3 from '../ethereum/web3';
 import notification from '../ethereum/notification';
 import variables from '../ethereum/variables';
+import { format } from 'util';
 
 const bigInt = require("big-integer");
 const dateFormat = require('dateformat');
@@ -179,7 +180,6 @@ class DeliveryRow extends Component {
 
       //Desxifra b
       const b1 = Z1.mul(a)
-      console.log('b1', b1.getX().toString(16))
       const b1Big = bigInt(b1.getX().toString(16),16);
       console.log('b1:', b1Big);
 
@@ -188,22 +188,28 @@ class DeliveryRow extends Component {
       console.log('bi hex', bi.toString(16))
 
       //Obtenim n de 'secp256k1' i ho passam a bigInt
-      const NBig = bigInt(ec.n, 16)
+      const NBig = bigInt((ec.n).toString('hex'), 16)
+      console.log('NBig', NBig);
+
 
       //Obtenim v
-      let v = variables.v;
-      v = v.toString('hex');
-      v = bigInt(v, 16)
+      let v = variables.vhex;
+      console.log(v)
+      console.log('v length', (v.length)*4);
+      console.log(v);
+
+      const vBig = bigInt(v, 16);
+      console.log('vBig', vBig);
+      
 
       //Calcula r = v-b*c mod(n)
-      let r = v.subtract(bi.multiply(c.mod(NBig)));
-      console.log(r.toString(16))
-      console.log('r', formatBigIntToHex(r))
-      console.log(r.length)
-      /*await deliveryContract.methods
-        .finish(receiver, "0x"+r.toString(16))
-        .send({ from: accounts[0] });*/
-
+      const r = (vBig.subtract(bi).multiply(c)).mod(NBig);
+      console.log(r);
+      
+      await deliveryContract.methods
+        .finish(receiver, formatBigIntToHex(r))
+        .send({ from: accounts[0] });
+      
       // Refresh
       alert('Delivery finished!');
       this.setState({ state: 'finished' });

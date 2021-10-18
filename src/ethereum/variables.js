@@ -1,3 +1,5 @@
+import bigInt from 'big-integer';
+
 const EC = require ('elliptic').ec;
 const elliptic = require ('elliptic');
 
@@ -23,8 +25,11 @@ console.log('A', A);
 B = curve.decodePoint(B, 'hex');
 console.log('B', B);
 
-let v = "b97199d608cdc1362db9d22867be00d0b75feda82a8681b630cdf23264ec52b1"
-v = Buffer.from(v);
+let vhex = "b97199d608cdc1362db9d22867be00d0b75feda82a8681b630cdf23264ec52b1"
+
+let v = Buffer.from(vhex);
+console.log('v length', (v.length)*4);
+
 
 const Gx = ec.g.x;
 const Gy = ec.g.y;
@@ -37,6 +42,7 @@ export default {
   b : b,
   B : B,
   v : v,
+  vhex: vhex,
   Gx : Gx,
   Gy : Gy, 
   N : N

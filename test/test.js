@@ -160,8 +160,17 @@ console.log('N', N)
 
 const NBig = bigInt(N, 16)
 
-let r = vBig.subtract(biBig.multiply(cBig.mod(NBig)));
+let r = vBig.subtract(biBig.multiply(cBig)).mod(NBig);
 console.log('r', r);
+const formatBigIntToHex = n => {
+  // Per assegurar que té una longitud parell (si no, dóna error)
+  if (n.toString(16).length % 2 === 0) {
+    return `0x${n.toString(16)}`;
+  } else {
+    return `0x0${n.toString(16)}`;
+  }
+};
+console.log('rhex', formatBigIntToHex(r))
 
 //BOB
 //1. Calcula
@@ -169,7 +178,7 @@ console.log('r', r);
 //console.log('bHex', bHex)
 //const bBig = bigInt(bHex, 16);
 //console.log('bBig', bBig);
-const vBob = r.add(bBig.multiply(cBig.mod(NBig)));
+const vBob = r.add(bBig.multiply(cBig)).mod(NBig);
 console.log('vBob', vBob);
 //2. Desxifra 
 const stringv = vBob.toString(16);
