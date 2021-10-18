@@ -90,6 +90,7 @@ const Vy = V.getY();
 //3. Xifra m
 const C = xor(v, messageSentBuffer);
 console.log('C:', C);
+console.log(C.toString('hex'))
 
 //BOB
 //1. Genera s

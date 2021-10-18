@@ -26,6 +26,7 @@ B = curve.decodePoint(B, 'hex');
 console.log('B', B);
 
 let vhex = "b97199d608cdc1362db9d22867be00d0b75feda82a8681b630cdf23264ec52b1"
+console.log('vBig', bigInt(vhex,16))
 
 let v = Buffer.from(vhex);
 console.log('v length', (v.length)*4);

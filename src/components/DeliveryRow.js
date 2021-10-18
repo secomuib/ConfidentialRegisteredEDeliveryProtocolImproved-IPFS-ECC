@@ -203,11 +203,12 @@ class DeliveryRow extends Component {
       
 
       //Calcula r = v-b*c mod(n)
-      const r = (vBig.subtract(bi).multiply(c)).mod(NBig);
-      console.log(r);
+      const r = vBig.subtract(bi.multiply(c)).mod(NBig);
+      console.log('r', r);
+      console.log((r.toString(16).substr(1)).length*4);
       
       await deliveryContract.methods
-        .finish(receiver, formatBigIntToHex(r))
+        .finish(receiver, '0x'+r.toString(16).substr(1))
         .send({ from: accounts[0] });
       
       // Refresh

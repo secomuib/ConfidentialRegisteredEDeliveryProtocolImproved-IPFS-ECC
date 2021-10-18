@@ -44,20 +44,28 @@ class DeliveryNew extends Component {
         console.log(variables.a);
 
         //v and V generation
-        const v = variables.v;
+        const v = variables.vhex;
         const V = ec.g.mul(v);
         const Vx = V.getX();
         const Vy = V.getY();
         
         
         let messageSentBuffer = Buffer.from(this.state.message, 'utf8');
-
+        let messageSent = bigInt(messageSentBuffer.toString('hex'), 16);
+        let vBig = bigInt(v, 16)
         //Encryption of message
-        const C = xor(v, messageSentBuffer);
-        console.log('C: ', C.toString('hex'));
+        const C = vBig.xor(messageSent);
+        console.log(C)
+        console.log('C: ', C.toString(16));
         
+        //Prova decryption
+        /*const mBob = vBig.xor(C);
+        console.log('mbob', mBob);
+        const prova = Buffer.from(mBob.toString(16), 'hex');
+        console.log('prova', prova.toString())*/
+
         //Upload C to IPFS
-        ipfsDoc = await ipfs.add("0x"+C.toString('hex'));
+        ipfsDoc = await ipfs.add(C.toString());
         console.log(ipfsDoc.cid.toString());
         
         const accounts = await web3.eth.getAccounts();

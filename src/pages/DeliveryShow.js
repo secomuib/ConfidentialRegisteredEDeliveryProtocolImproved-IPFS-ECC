@@ -5,6 +5,14 @@ import notification from '../ethereum/notification';
 import web3 from '../ethereum/web3';
 import variables from '../ethereum/variables';
 
+const EC = require ('elliptic').ec;
+const elliptic = require ('elliptic');
+
+//Create and initialize EC context
+const ec = new EC('secp256k1');
+
+var xor = require('buffer-xor');
+
 const bigInt = require("big-integer");
 const dateFormat = require('dateformat');
 
@@ -16,6 +24,7 @@ class DeliveryShow extends Component {
     state: '',
     g: '',
     p: '',
+    hashIPFS: '',
     c1: '',
     c2: '',
     ya: '',
@@ -46,16 +55,16 @@ class DeliveryShow extends Component {
       let sender = await deliveryContract.methods.sender().call();
       let receiver = await deliveryContract.methods.receivers(0).call();
       let state = await deliveryContract.methods.getState(receiver).call();
-      let g = await deliveryContract.methods.g().call();
-      let p = await deliveryContract.methods.p().call();
-      let c1 = await deliveryContract.methods.c1().call();
-      let c2 = await deliveryContract.methods.c2().call();
+      let gx = await deliveryContract.methods.gx().call();
+      let gy = await deliveryContract.methods.gy().call();
+      let n = await deliveryContract.methods.n().call();
+      let hashIPFS = await deliveryContract.methods.hashIPFS().call();
       
-      //Obtain c2 from IPFS
-      const response = await fetch('https://ipfs.infura.io:5001/api/v0/cat?arg='+c2);
-      c2 = await response.text();
+      //Obtain C from IPFS
+      const response = await fetch('https://ipfs.infura.io:5001/api/v0/cat?arg='+hashIPFS);
+      let C = await response.text();
 
-      let ya = await deliveryContract.methods.ya().call();
+      let A = await deliveryContract.methods.A().call();
       let term1 = await deliveryContract.methods.term1().call();
       let term2 = await deliveryContract.methods.term2().call();
       let start = await deliveryContract.methods.start().call();
@@ -64,9 +73,10 @@ class DeliveryShow extends Component {
 
       let z1 = receiversState.z1;
       let z2 = receiversState.z2;
-      let yb = receiversState.yb;
+      let bx = receiversState.bx;
+      let by = receiversState.by;
       let c = receiversState.c;
-      let w = receiversState.w;
+      let r = receiversState.r;
       let message = '';
 
       let d = new Date(0);
@@ -74,20 +84,50 @@ class DeliveryShow extends Component {
       start = dateFormat(d, "dd/mm/yyyy HH:MM");
 
       // Calcular MESSAGE
-      if (w) {
-        // TODO: El sender no té Xb
-        let xb = bigInt(variables.xb.substr(2), 16);
+      if (r) {
+        /*
+        const vBob = r.add(bBig.multiply(cBig)).mod(NBig);
+        console.log('vBob', vBob);
+        //2. Desxifra 
+        const stringv = vBob.toString(16);
+        console.log('stringv: ',stringv)
+        const vBuffer = Buffer.from(stringv, 'hex');
 
-        let wBig = bigInt(w.substr(2), 16);
-        let cBig = bigInt(c.substr(2), 16);
-        let pBig = bigInt(p.substr(2), 16);
-        let c2Big = bigInt(c2.substr(2), 16);
-        let yaBig = bigInt(ya.substr(2), 16);
-        
-        let r = wBig.subtract(cBig.multiply(xb.mod(pBig)));  // r = w-c*xb mod q
+        console.log('vBuffer', vBuffer, 'c', C);
+        const mBob = xor(vBuffer, C);
+        console.log(mBob.toString());*/
+        const formatBigIntToHex = n => {
+          // Per assegurar que té una longitud parell (si no, dóna error)
+          if (n.toString(16).length % 2 === 0) {
+            return `0x${n.toString(16)}`;
+          } else {
+            return `0x0${n.toString(16)}`;
+          }
+        };
 
-        const messageReceived = c2Big.divide(yaBig.modPow(r, pBig));
-        message = Buffer.from(messageReceived.toString(16), 'hex');
+        console.log('rhex', r.toString('hex'));
+        let rBig = bigInt('-'+r)
+        console.log('rhex', formatBigIntToHex(r, 16));
+
+        let bBig = bigInt(variables.b, 16)
+        let cBig = bigInt(c)
+        //Obtenim n de 'secp256k1' i ho passam a bigInt
+        const NBig = bigInt((ec.n).toString('hex'), 16)
+        console.log('rBig', rBig)
+        console.log('bBig', bBig)
+        console.log('cBig', cBig)
+        console.log('NBig', NBig)
+
+        let v = rBig.add(bBig.multiply(cBig)).mod(NBig);
+        console.log(v);
+
+        console.log('C', C)
+        C = bigInt(C);
+
+        const mBob = v.xor(C);
+        console.log('mbob', mBob);
+        message = Buffer.from(mBob.toString(16), 'hex');
+        console.log('prova', message.toString())
       }
 
       this.setState({ 
@@ -95,19 +135,20 @@ class DeliveryShow extends Component {
         sender: sender,
         receiver: receiver,
         state: state,
-        g: g,
-        p: p,
-        c1: c1,
-        c2: c2,
-        ya: ya,
+        gx: gx,
+        gy: gy,
+        hashIPFS: hashIPFS,
+        C: C,
+        A: A,
         term1: term1,
         term2: term2,
         start: start,
         z1: z1,
         z2: z2,
-        yb: yb,
+        bx: bx,
+        by: by,
         c: c,
-        w: w,
+        r: r,
         message: message,
         deposit: deposit
       });
@@ -179,50 +220,42 @@ class DeliveryShow extends Component {
           </Form.Field>
 
           <Form.Field>
-            <label>p of ElGamal algorithm</label>
+            <label>Gx of ECC algorithm</label>
             <Input
               readOnly
-              value={this.state.p}
+              value={this.state.gx}
             />
           </Form.Field>
 
           <Form.Field>
-            <label>q of ElGamal algorithm</label>
+            <label>Gy of ECC algorithm</label>
             <Input
               readOnly
-              value={variables.q}
+              value={this.state.gy}
             />
           </Form.Field>
 
           <Form.Field>
-            <label>g of ElGamal algorithm</label>
+            <label>Hash IPFS of the encrypted message</label>
             <Input
               readOnly
-              value={this.state.g}
+              value={this.state.hashIPFS}
             />
           </Form.Field>
 
           <Form.Field>
-            <label>c1 = g^r mod p</label>
+            <label>Ciphertext</label>
             <Input
               readOnly
-              value={this.state.c1}
+              value={this.state.C}
             />
           </Form.Field>
 
           <Form.Field>
-            <label>c2 = m·ya^r mod p</label>
+            <label>Public key of A</label>
             <Input
               readOnly
-              value={this.state.c2}
-            />
-          </Form.Field>
-
-          <Form.Field>
-            <label>ya, public key of A, ya = g^xa mod p</label>
-            <Input
-              readOnly
-              value={this.state.ya}
+              value={this.state.A}
             />
           </Form.Field>
 
@@ -271,10 +304,18 @@ class DeliveryShow extends Component {
           </Form.Field>
 
           <Form.Field>
-            <label>yb, public key of B, yb = g^xb mod p</label>
+            <label>Public Key of B, coordenate x</label>
             <Input
               readOnly
-              value={this.state.yb}
+              value={this.state.bx}
+            />
+          </Form.Field>
+
+           <Form.Field>
+            <label>Public Key of B, coordenate y</label>
+            <Input
+              readOnly
+              value={this.state.by}
             />
           </Form.Field>
 
@@ -287,10 +328,10 @@ class DeliveryShow extends Component {
           </Form.Field>
 
           <Form.Field>
-            <label>w = r.add(c.mod(p).multiply(xb.mod(p)).mod(p))</label>
+            <label>r = (v.subtract(bi).multiply(c)).mod(n)</label>
             <Input
               readOnly
-              value={this.state.w}
+              value={this.state.r}
             />
           </Form.Field>
 
