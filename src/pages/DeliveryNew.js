@@ -33,45 +33,37 @@ class DeliveryNew extends Component {
     this.setState({ loading: true, errorMessage: '' });
 
     try {
-        let c1, c2, ipfsDoc;
+        let ipfsDoc;
         
         // A, Ay, Gx, Gy and N of ECC algorithm
         let A = variables.A.encode('hex');
         let Gx = variables.Gx;
+        console.log('Gx', "0x"+Gx.toString(16))
         let Gy = variables.Gy;
+        console.log('Gy', "0x"+Gy.toString(16))
         let N = variables.N;
+        console.log('N', "0x"+N.toString(16))
         
-        console.log(variables.a);
-
         //v and V generation
         const v = variables.vhex;
         const V = ec.g.mul(v);
         const Vx = V.getX();
         const Vy = V.getY();
         
-        
+        //Encryption of message
         let messageSentBuffer = Buffer.from(this.state.message, 'utf8');
         let messageSent = bigInt(messageSentBuffer.toString('hex'), 16);
         let vBig = bigInt(v, 16)
-        //Encryption of message
+
         const C = vBig.xor(messageSent);
-        console.log(C)
-        console.log('C: ', C.toString(16));
         
-        //Prova decryption
-        /*const mBob = vBig.xor(C);
-        console.log('mbob', mBob);
-        const prova = Buffer.from(mBob.toString(16), 'hex');
-        console.log('prova', prova.toString())*/
 
         //Upload C to IPFS
         ipfsDoc = await ipfs.add(C.toString());
-        console.log(ipfsDoc.cid.toString());
         
         const accounts = await web3.eth.getAccounts();
         await factory.methods.createDelivery([this.state.receiver], "0x"+Vx.toString(16), "0x"+Vy.toString(16), ipfsDoc.cid.toString(),
-          "0x"+A, "0x"+Gx.toString(16), "0x"+Gy.toString(16), "0x"+N.toString(16),
-          this.state.term1, this.state.term2).send({ from: accounts[0], value: this.state.deposit });
+          "0x"+A, this.state.term1, this.state.term2).send({ from: accounts[0], value: this.state.deposit });
 
         alert('Delivery created!');
         // Refresh, using withRouter

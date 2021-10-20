@@ -6,9 +6,9 @@ contract ConfidentialMultipartyRegisteredEDeliveryWithoutTTPFactory {
     mapping(address => address[]) public receiverDeliveries;
     address[] public deliveries;
 
-    function createDelivery(address[] memory _receivers, uint256 _vx, uint256 _vy, string memory _hashIPFS, string _A, uint256 _gx, uint256 _gy, uint256 _n, uint256 _term1, uint256 _term2) public payable {
+    function createDelivery(address[] memory _receivers, uint256 _vx, uint256 _vy, string memory _hashIPFS, string _A, uint256 _term1, uint256 _term2) public payable {
         address newDelivery = (new ConfidentialMultipartyRegisteredEDeliveryWithoutTTP)
-            .value(msg.value)(msg.sender, _receivers, _vx, _vy, _hashIPFS, _A, _gx, _gy, _n, _term1, _term2);
+            .value(msg.value)(msg.sender, _receivers, _vx, _vy, _hashIPFS, _A, _term1, _term2);
         deliveries.push(newDelivery);
         senderDeliveries[msg.sender].push(newDelivery);
         for (uint256 i = 0; i<_receivers.length; i++) {
@@ -68,9 +68,9 @@ contract ConfidentialMultipartyRegisteredEDeliveryWithoutTTP {
     string public hashIPFS;
     string public A;
     // Base point
-    uint256 public gx;
-    uint256 public gy;
-    uint256 public n;
+    uint256 public gx = 0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798;
+    uint256 public gy = 0x483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8;
+    uint256 public n = 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141;
     uint256 public constant a = 0;
     
     // Time limit (in seconds)
@@ -81,7 +81,7 @@ contract ConfidentialMultipartyRegisteredEDeliveryWithoutTTP {
     uint public start;
 
     // Constructor funcion to create the delivery
-    constructor (address _sender, address[] memory _receivers, uint256 _vx, uint256 _vy, string memory _hashIPFS, string _A, uint256 _gx, uint256 _gy, uint256 _n, uint _term1, uint _term2) public payable {
+    constructor (address _sender, address[] memory _receivers, uint256 _vx, uint256 _vy, string memory _hashIPFS, string _A, uint _term1, uint _term2) public payable {
         // Requires that the sender send a deposit of minimum 1 wei (>0 wei)
         require(msg.value>0, "Sender has to send a deposit of minimun 1 wei");
         require(_term1 < _term2, "Timeout term2 must be greater than _term1");
@@ -96,9 +96,6 @@ contract ConfidentialMultipartyRegisteredEDeliveryWithoutTTP {
         vy = _vy;
         hashIPFS = _hashIPFS;
         A = _A;
-        gx = _gx;
-        gy = _gy;
-        n = _n;
         start = now; // now = block.timestamp
         term1 = _term1; // timeout term1, in seconds
         term2 = _term2; // timeout term2, in seconds
@@ -129,7 +126,7 @@ contract ConfidentialMultipartyRegisteredEDeliveryWithoutTTP {
             "The timeout term1 has not been reached and not all receivers have been accepted the delivery");
         require (msg.sender==sender, "Only sender of the delivery can finish");
 
-        //Check V == G x [ri] + Bi + [ci]
+        //Check V == G x [ri] + Bi x [ci]
         (Grx, Gry) = deriveKey(_r, gx, gy);
         (Bcx, Bcy) = deriveKey(
             receiversState[_receiver].c,

@@ -72,57 +72,46 @@ class DeliveryRow extends Component {
       let B = variables.B;
       let b = variables.b;
 
-      let hashIPFS = await deliveryContract.methods.hashIPFS().call();
-      console.log(hashIPFS)
+      //let hashIPFS = await deliveryContract.methods.hashIPFS().call();
       let A = (await deliveryContract.methods.A().call()).substr(2);
-      console.log('A', A);
+      
       // A descerialization
       var curve = elliptic.curves.secp256k1.curve;
       A = curve.decodePoint(A, 'hex');
 
-      // Genera s: 
+      // s generation: 
       s = elliptic.rand(32)
 
-      // Calcula Z1 = Gx[si];
+      // Z1 = Gx[si];
       Z1 = ec.g.mul(s);
       console.log('Z1', Z1);
-      // Calcula Z2 = (Ax[si]) XOR (bi)
+      // Z2 = (Ax[si]) XOR (bi)
       Z2 = A.mul(s);
-      //Passam el resultat a bigInt per poder calcular la XOR
+
+      //Z2 to bigInt 
       Z2 = bigInt(Z2.getX().toString(16),16)
 
-      //Passam b a bigInt
-      console.log('b hex', b)
+      //b to bigInt
       b = bigInt(b, 16)
-      console.log('b bigInt', b)
 
-
-      //Feim la XOR de Z2 amb bi
+      //XOR Z2 and b
       Z2 = Z2.xor(b)
 
-      // Genera c: 
+      // Challenge generation: 
       c = elliptic.rand(32);
-      console.log('c', c);
 
-      // Serialització Z1
+      // Z1 serialization:
       Z1 = Z1.encode('hex');
-      console.log('Z1', Z1);
 
-      var curve = elliptic.curves.secp256k1.curve;
-      const Z1decode = curve.decodePoint(Z1, 'hex');
-      console.log('Z1', Z1decode);
-
-      // Passam c a hexadecimal:
+      // challenge to hexadecimal:
       c = Buffer.from(c).toString("hex");
-      console.log(c);
-      let cBig = bigInt(c, 16);
-      console.log('cBig', cBig);
+      
 
-      // Obtenim les coordenades x i y de la clau pública del receptor
+      // x and y coordenates of B (receiver public key)
       const receiverPublicKeyX = B.getX();
       const receiverPublicKeyY = B.getY();
 
-      // Execució mètode accept() de l'smart contract
+      // Smart contract execution function accept()
       await deliveryContract.methods.accept("0x"+Z1, "0x"+Z2.toString(16), formatBigIntToHex(receiverPublicKeyX), formatBigIntToHex(receiverPublicKeyY), 
       "0x"+c).send({from: accounts[0]});
      
@@ -139,7 +128,6 @@ class DeliveryRow extends Component {
 
   onFinish = async (contractAddress) => {
 
-    let w;
     this.setState({ loading: true, errorMessage: '' });
 
     try {
@@ -147,65 +135,44 @@ class DeliveryRow extends Component {
 
       const accounts = await web3.eth.getAccounts();
 
-      const formatBigIntToHex = n => {
-        // Per assegurar que té una longitud parell (si no, dóna error)
-        if (n.toString(16).length % 2 === 0) {
-          return `0x${n.toString(16)}`;
-        } else {
-          return `0x0${n.toString(16)}`;
-        }
-      };
-
       let a = variables.a;
       console.log('a', a);
 
-      //Obté Z1, Z2, N i c que ha generat el receptor
+      // Z1, Z2, N and c (challenge)
       let receiver = await deliveryContract.methods.receivers(0).call();
       let Z1 = ((await deliveryContract.methods.receiversState(receiver).call()).z1).substr(2);
       let Z2 = ((await deliveryContract.methods.receiversState(receiver).call()).z2).substr(2);
       let c = (await deliveryContract.methods.receiversState(receiver).call()).c;
-      console.log(Z1, Z2, c);
       
+      //Z2 --> bigInt
       Z2 = bigInt(Z2, 16);
       console.log(typeof(c));
 
-      //Deserialització Z1, Z2
+      //Deserialization Z1, Z2
       var curve = elliptic.curves.secp256k1.curve;
       Z1 = curve.decodePoint(Z1, 'hex');
       console.log('Z1', Z1);
 
-      //Passam c a bigInt
+      //c to bigInt
       c = bigInt(c);
       console.log('c', c)
 
-      //Desxifra b
+      //Decipher b = Z_i2 XOR (Z_i1 x [a])
       const b1 = Z1.mul(a)
       const b1Big = bigInt(b1.getX().toString(16),16);
-      console.log('b1:', b1Big);
-
-      const bi = Z2.xor(b1Big);
-      console.log('bi', bi);
-      console.log('bi hex', bi.toString(16))
-
-      //Obtenim n de 'secp256k1' i ho passam a bigInt
-      const NBig = bigInt((ec.n).toString('hex'), 16)
-      console.log('NBig', NBig);
-
-
-      //Obtenim v
-      let v = variables.vhex;
-      console.log(v)
-      console.log('v length', (v.length)*4);
-      console.log(v);
-
-      const vBig = bigInt(v, 16);
-      console.log('vBig', vBig);
       
 
-      //Calcula r = v-b*c mod(n)
+      const bi = Z2.xor(b1Big);
+
+      //n to bigInt
+      const NBig = bigInt((ec.n).toString('hex'), 16)
+      
+      //v to bigInt
+      let v = variables.vhex;
+      let vBig = bigInt(v, 16);
+
+      //r = v-b*c mod(n)
       const r = vBig.subtract(bi.multiply(c)).mod(NBig);
-      console.log('r', r);
-      console.log((r.toString(16).substr(1)).length*4);
       
       await deliveryContract.methods
         .finish(receiver, '0x'+r.toString(16).substr(1))

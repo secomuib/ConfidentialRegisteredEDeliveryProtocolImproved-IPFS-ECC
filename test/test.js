@@ -1,4 +1,4 @@
-const assert = require('assert');
+/*const assert = require('assert');
 
 const EC = require('elliptic').ec;
 const elliptic = require ('elliptic');
@@ -6,31 +6,6 @@ const bigInt = require("big-integer");
 
 var xor = require('buffer-xor');
 
-/*const formatBigIntToHex = n => {
-  // Per assegurar que té una longitud parell (si no, dóna error)
-  if (n.toString(16).length % 2 === 0) {
-    return `0x${n.toString(16)}`;
-  } else {
-    return `0x0${n.toString(16)}`;
-  }
-};*/
-
-// Convert a hex string to a byte array
-/*function hexToBytes(hex) {
-  for (var bytes = [], c = 0; c < hex.length; c += 2)
-  bytes.push(parseInt(hex.substr(c, 2), 16));
-  return bytes;
-}
-
-// Convert a byte array to a hex string
-function bytesToHex(bytes) {
-  for (var hex = [], i = 0; i < bytes.length; i++) {
-      var current = bytes[i] < 0 ? bytes[i] + 256 : bytes[i];
-      hex.push((current >>> 4).toString(16));
-      hex.push((current & 0xF).toString(16));
-  }
-  return hex.join("");
-}*/
 
 //Create and initialize EC context
 const ec = new EC('secp256k1');
@@ -108,11 +83,7 @@ console.log('Z1', Z1);
 let Z1encode = Z1.encode('hex');
 console.log('Z1encode', Z1encode);
 var curve = elliptic.curves.secp256k1.curve;
-/*var prova = new elliptic.curve.short({
-  p: '1d',
-  a: '4',
-  b: '14',
-})*/
+
 let provaDecode = curve.decodePoint(Z1encode, 'hex')
 console.log('provaDecode', provaDecode);
 
@@ -175,10 +146,7 @@ console.log('rhex', formatBigIntToHex(r))
 
 //BOB
 //1. Calcula
-//const bHex = b.toString('hex');
-//console.log('bHex', bHex)
-//const bBig = bigInt(bHex, 16);
-//console.log('bBig', bBig);
+
 const vBob = r.add(bBig.multiply(cBig)).mod(NBig);
 console.log('vBob', vBob);
 //2. Desxifra 
@@ -189,15 +157,4 @@ const vBuffer = Buffer.from(stringv, 'hex');
 console.log('vBuffer', vBuffer, 'c', C);
 const mBob = xor(vBuffer, C);
 console.log(mBob.toString());
-
-//prova desxifram C
-//const provaDesxifratge = xor(v, C);
-//console.log(provaDesxifratge.toString());
-/*console.log('public',keySender.getPublic())
-const x = keySender.getPublic().getX().toString("hex");
-console.log('x', x)
-
-const y = keySender.getPublic().getY().toString("hex");
-console.log('y', y)
-const provaPublic = ec.keyFromPublic({x,y})
-console.log(provaPublic.getPublic())*/
+*/

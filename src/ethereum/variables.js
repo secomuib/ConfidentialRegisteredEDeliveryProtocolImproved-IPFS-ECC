@@ -18,7 +18,7 @@ let B = "04f2281c345b678735ba943456818fa08ae4a0bb4c8969d97d5047cb79a23ec14265820
 console.log(b);
 console.log(B);
 
-//Passam A i B a l'objecte Key
+//A and B to Key 'elliptic' object
 var curve = elliptic.curves.secp256k1.curve;
 A = curve.decodePoint(A, 'hex');
 console.log('A', A);

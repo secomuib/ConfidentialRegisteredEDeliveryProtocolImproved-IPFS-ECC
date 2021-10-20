@@ -69,6 +69,13 @@
     ]
   },
   "devDependencies": {
+    "chai": "^4.3.4",
+    "ethers": "^5.4.7",
+    "hardhat": "^2.6.6",
+    "hardhat-deploy": "^0.9.4",
+    "hardhat-deploy-ethers": "^0.3.0-beta.11",
+    "hardhat-gas-reporter": "^1.0.4",
+    "ipfs-api": "^18.1.1",
     "ipfs-http-client": "^53.0.1"
   }
 }

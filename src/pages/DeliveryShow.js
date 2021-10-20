@@ -22,20 +22,20 @@ class DeliveryShow extends Component {
     sender: '',
     receiver: '',
     state: '',
-    g: '',
-    p: '',
+    gx: '',
+    gy: '',
     hashIPFS: '',
-    c1: '',
-    c2: '',
-    ya: '',
+    C: '',
+    A: '',
     term1: '',
     term2: '',
     start: '',
     z1: '',
     z2: '',
-    yb: '',
+    bx: '',
+    by: '',
     c: '',
-    w: '',
+    r: '',
     message: '',
     deposit: '',
     loading: false,
@@ -82,52 +82,23 @@ class DeliveryShow extends Component {
       let d = new Date(0);
       d.setUTCSeconds(start);
       start = dateFormat(d, "dd/mm/yyyy HH:MM");
-
+      console.log(r)
       // Calcular MESSAGE
-      if (r) {
-        /*
-        const vBob = r.add(bBig.multiply(cBig)).mod(NBig);
-        console.log('vBob', vBob);
-        //2. Desxifra 
-        const stringv = vBob.toString(16);
-        console.log('stringv: ',stringv)
-        const vBuffer = Buffer.from(stringv, 'hex');
-
-        console.log('vBuffer', vBuffer, 'c', C);
-        const mBob = xor(vBuffer, C);
-        console.log(mBob.toString());*/
-        const formatBigIntToHex = n => {
-          // Per assegurar que té una longitud parell (si no, dóna error)
-          if (n.toString(16).length % 2 === 0) {
-            return `0x${n.toString(16)}`;
-          } else {
-            return `0x0${n.toString(16)}`;
-          }
-        };
-
-        console.log('rhex', r.toString('hex'));
+      if (r!=0) {
+    
+        //r, b,c, C and n to bigInt
         let rBig = bigInt('-'+r)
-        console.log('rhex', formatBigIntToHex(r, 16));
-
         let bBig = bigInt(variables.b, 16)
         let cBig = bigInt(c)
-        //Obtenim n de 'secp256k1' i ho passam a bigInt
-        const NBig = bigInt((ec.n).toString('hex'), 16)
-        console.log('rBig', rBig)
-        console.log('bBig', bBig)
-        console.log('cBig', cBig)
-        console.log('NBig', NBig)
-
+        let CBig = bigInt(C);
+        const NBig = bigInt((n))
+        
+        //v = ri + bi*ci modn
         let v = rBig.add(bBig.multiply(cBig)).mod(NBig);
-        console.log(v);
 
-        console.log('C', C)
-        C = bigInt(C);
-
-        const mBob = v.xor(C);
-        console.log('mbob', mBob);
-        message = Buffer.from(mBob.toString(16), 'hex');
-        console.log('prova', message.toString())
+        //Obtain message: v XOR C
+        const m = v.xor(CBig);
+        message = Buffer.from(m.toString(16), 'hex');
       }
 
       this.setState({ 
@@ -288,7 +259,7 @@ class DeliveryShow extends Component {
           </Form.Field>
 
           <Form.Field>
-            <label>z1 = g^s mod p</label>
+            <label>Z1 = Gx[si]</label>
             <Input
               readOnly
               value={this.state.z1}
@@ -296,7 +267,7 @@ class DeliveryShow extends Component {
           </Form.Field>
 
           <Form.Field>
-            <label>z2 = xb·ya^s mod p</label>
+            <label>Z2 = Ax[si] XOR bi</label>
             <Input
               readOnly
               value={this.state.z2}

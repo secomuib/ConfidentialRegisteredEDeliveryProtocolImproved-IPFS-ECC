@@ -77,6 +77,7 @@ class Home extends Component {
         // Done
         return (
             <div>
+                <h3>IPFS+ECC</h3>
                 <h3><Icon name='sign in alternate' circular />&nbsp;Received deliveries</h3>
                 <Table fixed>
                     <Table.Header>
