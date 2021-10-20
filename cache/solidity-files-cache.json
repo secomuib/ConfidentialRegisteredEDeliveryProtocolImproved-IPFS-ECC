@@ -2,11 +2,56 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "C:\\Users\\Usuario\\Documents\\UIB\\SECOM\\notificacions\\prova\\PatentConfidentialEDeliveryWithoutTTP-master\\contracts\\ConfidentialMultipartyRegisteredEDeliveryWithoutTTP.sol": {
-      "lastModificationDate": 1634731781531,
-      "contentHash": "a51251c2082953d074fff96cc1b1cd9c",
+      "lastModificationDate": 1634739308508,
+      "contentHash": "77605d8e8d287bf17f669a6c5b551f7b",
       "sourceName": "contracts/ConfidentialMultipartyRegisteredEDeliveryWithoutTTP.sol",
       "solcConfig": {
-        "version": "0.4.25",
+        "version": "0.5.3",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          }
+        }
+      },
+      "imports": [
+        "./EllipticCurve.sol"
+      ],
+      "versionPragmas": [
+        "^0.5.3"
+      ],
+      "artifacts": [
+        "ConfidentialMultipartyRegisteredEDeliveryWithoutTTP",
+        "ConfidentialMultipartyRegisteredEDeliveryWithoutTTPFactory"
+      ]
+    },
+    "C:\\Users\\Usuario\\Documents\\UIB\\SECOM\\notificacions\\prova\\PatentConfidentialEDeliveryWithoutTTP-master\\contracts\\EllipticCurve.sol": {
+      "lastModificationDate": 1634736921046,
+      "contentHash": "130195fce5e015b778a8d4689c063381",
+      "sourceName": "contracts/EllipticCurve.sol",
+      "solcConfig": {
+        "version": "0.5.3",
         "settings": {
           "optimizer": {
             "enabled": true,
@@ -37,11 +82,10 @@
       },
       "imports": [],
       "versionPragmas": [
-        "^0.4.25"
+        ">=0.5.3 <0.7.0"
       ],
       "artifacts": [
-        "ConfidentialMultipartyRegisteredEDeliveryWithoutTTP",
-        "ConfidentialMultipartyRegisteredEDeliveryWithoutTTPFactory"
+        "EllipticCurve"
       ]
     }
   }
