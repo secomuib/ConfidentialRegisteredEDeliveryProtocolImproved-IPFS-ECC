@@ -29,7 +29,7 @@ describe('ConfidentialMultipartyRegisteredEDeliveryWithoutTTP', () => {
     let keySender, keyReceiver, G, Gx, Gy, N, messageSent, C, V, Vx, Vy, ipfsDoc;
     let v, c, s, A, a, B, b, Z1, Z1encode, Z2;
     let r;
-    let owner, addr1;
+    let owner, addr1, addr2, addr3, addr4, addr5, addr6, addr7, addr8, addr9, addr10;
 
 
     const MESSAGE = "Hola, com va tot?"
@@ -65,6 +65,7 @@ describe('ConfidentialMultipartyRegisteredEDeliveryWithoutTTP', () => {
         //Encryption
         C = vBig.xor(messageSent);
         C = Buffer.from(C.toString(), 'utf8')
+        console.log('C', C)
         //Upload C to IPFS
         ipfsDoc = await ipfs.add(C);
         //console.log(ipfsDoc[0].path)
@@ -99,14 +100,19 @@ describe('ConfidentialMultipartyRegisteredEDeliveryWithoutTTP', () => {
         // VARIABLES FOR FINISH()
         //Generation of r = v - bi * ci modn
         r = vBig.subtract(bBig.multiply(cBig)).mod(NBig);
-
+        /*console.log('r', r);
+        console.log('bBig', bBig);
+        console.log('cBig', cBig);
+        console.log('NBig', NBig);*/
+        
         //DECRYPTION         
         //v = ri + bi*ci modn
         let _v = r.add(bBig.multiply(cBig)).mod(NBig);
+        //console.log(_v)
         let CBuff = Buffer.from(C).toString();
-        console.log('CBuff', CBuff)
+        //console.log('CBuff', CBuff)
         let CBig = bigInt(CBuff);
-        console.log('Cbig', CBig);
+        //console.log('Cbig', CBig);
 
         //Obtain message: v XOR C
         const m = _v.xor(CBig);
@@ -114,14 +120,14 @@ describe('ConfidentialMultipartyRegisteredEDeliveryWithoutTTP', () => {
         console.log(message.toString());
 
         //Contracts deployment
-        [owner, addr1] = await ethers.getSigners();
+        [owner, addr1, addr2, addr3, addr4, addr5, addr6, addr7, addr8, addr9, addr10] = await ethers.getSigners();
 
         const FactoryContract = await ethers.getContractFactory('ConfidentialMultipartyRegisteredEDeliveryWithoutTTPFactory')
         const DeliveryContract = await ethers.getContractFactory('ConfidentialMultipartyRegisteredEDeliveryWithoutTTP')
 
         factoryContract = await FactoryContract.deploy();
 
-        await factoryContract.createDelivery([addr1.address], "0x" + Vx.toString(16), "0x" + Vy.toString(16), ipfsDoc[0].path,
+        await factoryContract.createDelivery([addr1.address, addr2.address/*, addr3.address, addr4.address, addr5.address, addr6.address, addr7.address, addr8.address, addr9.address, addr10.address*/], "0x" + Vx.toString(16), "0x" + Vy.toString(16), ipfsDoc[0].path,
             "0x" + A, 600, 1200, { value: ethers.utils.parseEther('1.0')});
 
         const addresses = await factoryContract.getDeliveries();
@@ -139,8 +145,11 @@ describe('ConfidentialMultipartyRegisteredEDeliveryWithoutTTP', () => {
             }
         };
 
-        await deliveryContract.connect(addr1).accept("0x" + Z1encode, "0x" + Z2.toString(16), formatBigIntToHex(B.getX()), formatBigIntToHex(B.getY()),
+        await deliveryContract.connect(addr1).accept("0x" + Z1encode, formatBigIntToHex(Z2), formatBigIntToHex(B.getX()), formatBigIntToHex(B.getY()),
             "0x" + c.toString('hex'));
+        
+        let state = await deliveryContract.connect(addr1).getState(addr1.address);
+        assert.equal(state, "accepted");
     });
 
     it("sender can finish delivery", async function () {
@@ -154,9 +163,75 @@ describe('ConfidentialMultipartyRegisteredEDeliveryWithoutTTP', () => {
         };
         await deliveryContract.connect(addr1).accept("0x" + Z1encode, "0x" + Z2.toString(16), formatBigIntToHex(B.getX()), formatBigIntToHex(B.getY()),
             "0x" + c.toString('hex'));
+        await deliveryContract.connect(addr2).accept("0x" + Z1encode, formatBigIntToHex(Z2), formatBigIntToHex(B.getX()), formatBigIntToHex(B.getY()),
+            "0x" + c.toString('hex'));
+        /*await deliveryContract.connect(addr3).accept("0x" + Z1encode, formatBigIntToHex(Z2), formatBigIntToHex(B.getX()), formatBigIntToHex(B.getY()),
+            "0x" + c.toString('hex'));
+        await deliveryContract.connect(addr4).accept("0x" + Z1encode, formatBigIntToHex(Z2), formatBigIntToHex(B.getX()), formatBigIntToHex(B.getY()),
+            "0x" + c.toString('hex'));
+        await deliveryContract.connect(addr5).accept("0x" + Z1encode, formatBigIntToHex(Z2), formatBigIntToHex(B.getX()), formatBigIntToHex(B.getY()),
+            "0x" + c.toString('hex'));
+        await deliveryContract.connect(addr6).accept("0x" + Z1encode, formatBigIntToHex(Z2), formatBigIntToHex(B.getX()), formatBigIntToHex(B.getY()),
+            "0x" + c.toString('hex'));
+        await deliveryContract.connect(addr7).accept("0x" + Z1encode, formatBigIntToHex(Z2), formatBigIntToHex(B.getX()), formatBigIntToHex(B.getY()),
+            "0x" + c.toString('hex'));
+        await deliveryContract.connect(addr8).accept("0x" + Z1encode, formatBigIntToHex(Z2), formatBigIntToHex(B.getX()), formatBigIntToHex(B.getY()),
+            "0x" + c.toString('hex'));
+        await deliveryContract.connect(addr9).accept("0x" + Z1encode, formatBigIntToHex(Z2), formatBigIntToHex(B.getX()), formatBigIntToHex(B.getY()),
+            "0x" + c.toString('hex'));
+        await deliveryContract.connect(addr10).accept("0x" + Z1encode, formatBigIntToHex(Z2), formatBigIntToHex(B.getX()), formatBigIntToHex(B.getY()),
+            "0x" + c.toString('hex'));*/
         
         const rstring = '0x' + r.toString(16).substr(1);
         await deliveryContract.connect(owner).finish(addr1.address, rstring);
     });
+
+    /*it("received message is correct", async function() {
+        const formatBigIntToHex = n => {
+            // Per assegurar que té una longitud parell (si no, dóna error)
+            if (n.toString(16).length % 2 === 0) {
+                return `0x${n.toString(16)}`;
+            } else {
+                return `0x0${n.toString(16)}`;
+            }
+        }
+
+        await deliveryContract.connect(addr1).accept("0x" + Z1encode, formatBigIntToHex(Z2), formatBigIntToHex(B.getX()), formatBigIntToHex(B.getY()),
+            "0x" + c.toString('hex'));
+
+        const rstring = '0x' + r.toString(16).substr(1);
+        await deliveryContract.connect(owner).finish(addr1.address, rstring);
+        
+        let receiversState = await deliveryContract.receiversState(addr1.address);
+        c = receiversState.c;
+
+        let cBig = bigInt(c, 16);
+        let bBig = bigInt(b,16);
+
+        let _hashIPFS = await deliveryContract.hashIPFS();
+        let _C = await ipfs.get(_hashIPFS);
+        _C = _C[0].content
+
+        //C = bigInt(Buffer.from(C).toString())
+        console.log('_C', _C)
+
+        //console.log('r', r);
+        //console.log('bBig', bBig);
+        //console.log('cBig', cBig);
+        //console.log('NBig', NBig);
+        //DECRYPTION         
+        //v = ri + bi*ci modn
+        let __v = r.add(bBig.multiply(cBig)).mod(NBig);
+        console.log('v', __v)
+        let CBuff = Buffer.from(C).toString();
+        console.log('CBuff', CBuff)
+        let CBig = bigInt(CBuff);
+        console.log('Cbig', CBig);
+
+        //Obtain message: v XOR C
+        const m = __v.xor(CBig);
+        message = Buffer.from(m.toString(16), 'hex');
+        console.log(message.toString());
+    });*/
 
 });

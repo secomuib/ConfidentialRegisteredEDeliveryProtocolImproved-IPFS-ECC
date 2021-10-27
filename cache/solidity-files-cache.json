@@ -47,8 +47,8 @@
       ]
     },
     "C:\\Users\\Usuario\\Documents\\UIB\\SECOM\\notificacions\\prova\\PatentConfidentialEDeliveryWithoutTTP-master\\contracts\\EllipticCurve.sol": {
-      "lastModificationDate": 1634736921046,
-      "contentHash": "130195fce5e015b778a8d4689c063381",
+      "lastModificationDate": 1634803037390,
+      "contentHash": "94e81ce91bde9e026dbadec42cc6a6fc",
       "sourceName": "contracts/EllipticCurve.sol",
       "solcConfig": {
         "version": "0.5.3",

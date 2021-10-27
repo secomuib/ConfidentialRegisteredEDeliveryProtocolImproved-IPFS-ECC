@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+//Llibreria: https://www.npmjs.com/package/elliptic-curve-solidity
 
 pragma solidity >=0.5.3 <0.7.0;
 
