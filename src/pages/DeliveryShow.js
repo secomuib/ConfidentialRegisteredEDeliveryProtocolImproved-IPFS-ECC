@@ -55,9 +55,10 @@ class DeliveryShow extends Component {
       let sender = await deliveryContract.methods.sender().call();
       let receiver = await deliveryContract.methods.receivers(0).call();
       let state = await deliveryContract.methods.getState(receiver).call();
-      let gx = await deliveryContract.methods.gx().call();
-      let gy = await deliveryContract.methods.gy().call();
-      let n = await deliveryContract.methods.n().call();
+      let gx = await deliveryContract.methods.GX().call();
+      let gy = await deliveryContract.methods.GY().call();
+      let n = variables.N;
+      console.log('n', n);
       let hashIPFS = await deliveryContract.methods.hashIPFS().call();
       
       //Obtain C from IPFS
@@ -91,7 +92,7 @@ class DeliveryShow extends Component {
         let bBig = bigInt(variables.b, 16)
         let cBig = bigInt(c)
         let CBig = bigInt(C);
-        const NBig = bigInt((n))
+        const NBig = bigInt((n.toString(16)),16)
         
         //v = ri + bi*ci modn
         let v = rBig.add(bBig.multiply(cBig)).mod(NBig);

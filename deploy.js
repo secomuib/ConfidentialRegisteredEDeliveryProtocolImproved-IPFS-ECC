@@ -17,9 +17,9 @@ const deploy = async () => {
 
   console.log('Attempting to deploy from account', accounts[0]);
 
-  const result = await new web3.eth.Contract(JSON.parse(compiledFactory.interface))
-    .deploy({ data: compiledFactory.bytecode, arguments: [] })
-    .send({ from: accounts[0], gas: '8000000', gasPrice: '20000000000' });
+  const result = await new web3.eth.Contract(compiledFactory.abi)
+    .deploy({ data: compiledFactory.evm.bytecode.object, arguments: [] })
+    .send({ from: accounts[0], gas: '8000000' });
 
   //fs.writeFileSync('./CONTRACTADDRESS', result.options.address);
   compiledFactory.address = result.options.address;
