@@ -127,7 +127,7 @@ describe('ConfidentialMultipartyRegisteredEDeliveryWithoutTTP', () => {
 
         factoryContract = await FactoryContract.deploy();
 
-        await factoryContract.createDelivery([addr1.address, addr2.address/*, addr3.address, addr4.address, addr5.address, addr6.address, addr7.address, addr8.address, addr9.address, addr10.address*/], "0x" + Vx.toString(16), "0x" + Vy.toString(16), ipfsDoc[0].path,
+        await factoryContract.createDelivery([addr1.address/*, addr2.address, addr3.address, addr4.address, addr5.address, addr6.address, addr7.address, addr8.address, addr9.address, addr10.address*/], "0x" + Vx.toString(16), "0x" + Vy.toString(16), ipfsDoc[0].path,
             "0x" + A, 600, 1200, { value: ethers.utils.parseEther('1.0')});
 
         const addresses = await factoryContract.getDeliveries();
@@ -163,9 +163,9 @@ describe('ConfidentialMultipartyRegisteredEDeliveryWithoutTTP', () => {
         };
         await deliveryContract.connect(addr1).accept("0x" + Z1encode, "0x" + Z2.toString(16), formatBigIntToHex(B.getX()), formatBigIntToHex(B.getY()),
             "0x" + c.toString('hex'));
-        await deliveryContract.connect(addr2).accept("0x" + Z1encode, formatBigIntToHex(Z2), formatBigIntToHex(B.getX()), formatBigIntToHex(B.getY()),
+        /*await deliveryContract.connect(addr2).accept("0x" + Z1encode, formatBigIntToHex(Z2), formatBigIntToHex(B.getX()), formatBigIntToHex(B.getY()),
             "0x" + c.toString('hex'));
-        /*await deliveryContract.connect(addr3).accept("0x" + Z1encode, formatBigIntToHex(Z2), formatBigIntToHex(B.getX()), formatBigIntToHex(B.getY()),
+        await deliveryContract.connect(addr3).accept("0x" + Z1encode, formatBigIntToHex(Z2), formatBigIntToHex(B.getX()), formatBigIntToHex(B.getY()),
             "0x" + c.toString('hex'));
         await deliveryContract.connect(addr4).accept("0x" + Z1encode, formatBigIntToHex(Z2), formatBigIntToHex(B.getX()), formatBigIntToHex(B.getY()),
             "0x" + c.toString('hex'));
