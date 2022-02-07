@@ -1,4 +1,4 @@
-pragma solidity ^0.5.3;
+pragma solidity ^0.6.5;
 
 /**
  * @title Elliptic Curve Library
@@ -429,13 +429,33 @@ contract ConfidentialMultipartyRegisteredEDeliveryWithoutTTPFactory {
     mapping(address => address[]) public receiverDeliveries;
     address[] public deliveries;
 
+    address immutable newDelivery;
+
+    constructor () public{
+      newDelivery = address(new ConfidentialMultipartyRegisteredEDeliveryWithoutTTP());
+    }
+
+    function createClone(address target) internal returns (address result) {
+        bytes20 targetBytes = bytes20(target);
+        assembly {
+        let clone := mload(0x40)
+        mstore(clone, 0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000)
+        mstore(add(clone, 0x14), targetBytes)
+        mstore(add(clone, 0x28), 0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000)
+        result := create(0, clone, 0x37)
+        }
+    }
+
     function createDelivery(address[] memory _receivers, uint256 _vx, uint256 _vy, string memory _hashIPFS, string memory _A, uint256 _term1, uint256 _term2) public payable {
-        address newDelivery = address ((new ConfidentialMultipartyRegisteredEDeliveryWithoutTTP)
-            .value(msg.value)(msg.sender, _receivers, _vx, _vy, _hashIPFS, _A, _term1, _term2));
-        deliveries.push(newDelivery);
-        senderDeliveries[msg.sender].push(newDelivery);
+        address newDeliveryAddr = createClone(newDelivery); 
+        //address newDeliveryAddr = address ((new ConfidentialMultipartyRegisteredEDeliveryWithoutTTP)
+          //  .value(msg.value)(msg.sender, _receivers, _vx, _vy, _hashIPFS, _A, _term1, _term2));
+        ConfidentialMultipartyRegisteredEDeliveryWithoutTTP Delivery = ConfidentialMultipartyRegisteredEDeliveryWithoutTTP(newDeliveryAddr);
+        Delivery.initialize{value: msg.value}(msg.sender, _receivers, _vx, _vy, _hashIPFS, _A, _term1, _term2);
+        deliveries.push(newDeliveryAddr);
+        senderDeliveries[msg.sender].push(newDeliveryAddr);
         for (uint256 i = 0; i<_receivers.length; i++) {
-            receiverDeliveries[_receivers[i]].push(newDelivery);
+            receiverDeliveries[_receivers[i]].push(newDeliveryAddr);
         }
     }
 
@@ -507,8 +527,16 @@ contract ConfidentialMultipartyRegisteredEDeliveryWithoutTTP {
     // Start time
     uint public start;
 
-    // Constructor funcion to create the delivery
-    constructor (address _sender, address[] memory _receivers, uint256 _vx, uint256 _vy, string memory _hashIPFS, string memory _A, uint _term1, uint _term2) public payable {
+    bool public isBase; 
+
+
+    constructor () public{
+      //To ensure that the base contract cannot be initialized
+      isBase = true;
+    }
+    
+    // Initialize function to create the delivery
+    function initialize(address _sender, address[] memory _receivers, uint256 _vx, uint256 _vy, string memory _hashIPFS, string memory _A, uint _term1, uint _term2) public payable {
         // Requires that the sender send a deposit of minimum 1 wei (>0 wei)
         require(msg.value>0, "Sender has to send a deposit of minimun 1 wei");
         require(_term1 < _term2, "Timeout term2 must be greater than _term1");

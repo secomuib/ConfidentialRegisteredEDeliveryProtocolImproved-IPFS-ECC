@@ -1,12 +1,12 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "C:\\Users\\Usuario\\Documents\\UIB\\SECOM\\notificacions\\prova\\PatentConfidentialEDeliveryWithoutTTP-master\\contracts\\ConfidentialMultipartyRegisteredEDeliveryWithoutTTP.sol": {
-      "lastModificationDate": 1634739308508,
-      "contentHash": "77605d8e8d287bf17f669a6c5b551f7b",
+    "C:\\Users\\Usuario\\Documents\\UIB\\SECOM\\notificacions\\PatentConfidentialEDelivery-IPFS-ECC\\PatentConfidentialEDeliveryWithoutTTP-master\\contracts\\ConfidentialMultipartyRegisteredEDeliveryWithoutTTP.sol": {
+      "lastModificationDate": 1644246930619,
+      "contentHash": "f4766de914f2fe67610f74ca02566e71",
       "sourceName": "contracts/ConfidentialMultipartyRegisteredEDeliveryWithoutTTP.sol",
       "solcConfig": {
-        "version": "0.5.3",
+        "version": "0.6.6",
         "settings": {
           "optimizer": {
             "enabled": true,
@@ -35,23 +35,22 @@
           }
         }
       },
-      "imports": [
-        "./EllipticCurve.sol"
-      ],
+      "imports": [],
       "versionPragmas": [
-        "^0.5.3"
+        "^0.6.5"
       ],
       "artifacts": [
         "ConfidentialMultipartyRegisteredEDeliveryWithoutTTP",
-        "ConfidentialMultipartyRegisteredEDeliveryWithoutTTPFactory"
+        "ConfidentialMultipartyRegisteredEDeliveryWithoutTTPFactory",
+        "EllipticCurve"
       ]
     },
-    "C:\\Users\\Usuario\\Documents\\UIB\\SECOM\\notificacions\\prova\\PatentConfidentialEDeliveryWithoutTTP-master\\contracts\\EllipticCurve.sol": {
+    "C:\\Users\\Usuario\\Documents\\UIB\\SECOM\\notificacions\\PatentConfidentialEDelivery-IPFS-ECC\\PatentConfidentialEDeliveryWithoutTTP-master\\contracts\\EllipticCurve.sol": {
       "lastModificationDate": 1634803037390,
       "contentHash": "94e81ce91bde9e026dbadec42cc6a6fc",
       "sourceName": "contracts/EllipticCurve.sol",
       "solcConfig": {
-        "version": "0.5.3",
+        "version": "0.6.6",
         "settings": {
           "optimizer": {
             "enabled": true,
