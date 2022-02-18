@@ -77,6 +77,7 @@ module.exports = {
     coinmarketcap: '69906080-75f3-4f48-8689-268ba8b4480b',
     enabled: process.env.GAS_REPORT ? true : true,
     gasPrice: 1,
+    showTimeSpent: true,
   },
   typechain: {
     outDir: 'src/typechain',

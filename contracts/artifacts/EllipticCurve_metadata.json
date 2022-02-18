@@ -1,0 +1,47 @@
+{
+	"compiler": {
+		"version": "0.6.12+commit.27d51765"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"author": "Witnet Foundation",
+			"details": "Library providing arithmetic operations over elliptic curves. This library does not check whether the inserted points belong to the curve `isOnCurve` function should be used by the library user to check the aforementioned statement.",
+			"kind": "dev",
+			"methods": {},
+			"title": "Elliptic Curve Library",
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"PatentConfidentialEDeliveryWithoutTTP-master/contracts/ConfidentialMultipartyRegisteredEDeliveryWithoutTTP.sol": "EllipticCurve"
+		},
+		"evmVersion": "istanbul",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"PatentConfidentialEDeliveryWithoutTTP-master/contracts/ConfidentialMultipartyRegisteredEDeliveryWithoutTTP.sol": {
+			"keccak256": "0x59d859732b520f7d39916b6df68fb74c011e2eefaa3a642c20a2b79033d077e5",
+			"urls": [
+				"bzz-raw://21cfe8f89a6b9d7fbfd4e0f64f7c4f5925c26a2a9be618b4cc5e031423f44949",
+				"dweb:/ipfs/QmZgvGqtD7GkCrvABN8BFCmiZHLz3173R6hYpfMjYPBr8K"
+			]
+		}
+	},
+	"version": 1
+}

@@ -65,7 +65,7 @@ describe('ConfidentialMultipartyRegisteredEDeliveryWithoutTTP', () => {
         //Encryption
         C = vBig.xor(messageSent);
         C = Buffer.from(C.toString(), 'utf8')
-        console.log('C', C)
+        //console.log('C', C)
         //Upload C to IPFS
         ipfsDoc = await ipfs.add(C);
         //console.log(ipfsDoc[0].path)
@@ -117,7 +117,7 @@ describe('ConfidentialMultipartyRegisteredEDeliveryWithoutTTP', () => {
         //Obtain message: v XOR C
         const m = _v.xor(CBig);
         const message = Buffer.from(m.toString(16), 'hex');
-        console.log(message.toString());
+        //console.log(message.toString());
 
         //Contracts deployment
         [owner, addr1, addr2, addr3, addr4, addr5, addr6, addr7, addr8, addr9, addr10] = await ethers.getSigners();
@@ -127,13 +127,22 @@ describe('ConfidentialMultipartyRegisteredEDeliveryWithoutTTP', () => {
 
         factoryContract = await FactoryContract.deploy();
 
-        await factoryContract.createDelivery([addr1.address, addr2.address/*, addr3.address, addr4.address, addr5.address, addr6.address, addr7.address, addr8.address, addr9.address, addr10.address*/], "0x" + Vx.toString(16), "0x" + Vy.toString(16), ipfsDoc[0].path,
+        await factoryContract.createDelivery([addr1.address, /*addr2.address/*, addr3.address, addr4.address, addr5.address, addr6.address, addr7.address, addr8.address, addr9.address, addr10.address*/], "0x" + Vx.toString(16), "0x" + Vy.toString(16), ipfsDoc[0].path,
             "0x" + A, 600, 1200, { value: ethers.utils.parseEther('1.0')});
 
         const addresses = await factoryContract.getDeliveries();
 
         deliveryContract = DeliveryContract.attach(addresses[0]);
     });
+    it("Owner can deploy delivery", async function () {
+        const FactoryContract = await ethers.getContractFactory('ConfidentialMultipartyRegisteredEDeliveryWithoutTTPFactory')
+        const DeliveryContract = await ethers.getContractFactory('ConfidentialMultipartyRegisteredEDeliveryWithoutTTP')
+
+        const factoryContract = await FactoryContract.deploy();
+
+        await factoryContract.createDelivery([addr1.address/*, addr2.address/*, addr3.address, addr4.address, addr5.address, addr6.address, addr7.address, addr8.address, addr9.address, addr10.address*/], "0x" + Vx.toString(16), "0x" + Vy.toString(16), ipfsDoc[0].path,
+            "0x" + A, 600, 1200, { value: ethers.utils.parseEther('1.0')});
+    })
 
     it("receiver can accept delivery", async function () {
         const formatBigIntToHex = n => {
@@ -163,7 +172,7 @@ describe('ConfidentialMultipartyRegisteredEDeliveryWithoutTTP', () => {
         };
         await deliveryContract.connect(addr1).accept("0x" + Z1encode, "0x" + Z2.toString(16), formatBigIntToHex(B.getX()), formatBigIntToHex(B.getY()),
             "0x" + c.toString('hex'));
-        await deliveryContract.connect(addr2).accept("0x" + Z1encode, formatBigIntToHex(Z2), formatBigIntToHex(B.getX()), formatBigIntToHex(B.getY()),
+        /*await deliveryContract.connect(addr2).accept("0x" + Z1encode, formatBigIntToHex(Z2), formatBigIntToHex(B.getX()), formatBigIntToHex(B.getY()),
             "0x" + c.toString('hex'));
         /*await deliveryContract.connect(addr3).accept("0x" + Z1encode, formatBigIntToHex(Z2), formatBigIntToHex(B.getX()), formatBigIntToHex(B.getY()),
             "0x" + c.toString('hex'));
@@ -181,9 +190,10 @@ describe('ConfidentialMultipartyRegisteredEDeliveryWithoutTTP', () => {
             "0x" + c.toString('hex'));
         await deliveryContract.connect(addr10).accept("0x" + Z1encode, formatBigIntToHex(Z2), formatBigIntToHex(B.getX()), formatBigIntToHex(B.getY()),
             "0x" + c.toString('hex'));*/
-        
-        const rstring = '0x' + r.toString(16).substr(1);
-        await deliveryContract.connect(owner).finish(addr1.address, rstring);
+        it("owner finish ", async function () {
+            const rstring = '0x' + r.toString(16).substr(1);
+            await deliveryContract.connect(owner).finish(addr1.address, rstring);
+        })
     });
 
     /*it("received message is correct", async function() {
