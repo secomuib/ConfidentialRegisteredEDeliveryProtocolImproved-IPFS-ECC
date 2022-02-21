@@ -7,8 +7,8 @@ const compiledFactoryPath = './src/ethereum/build/ConfidentialMultipartyRegister
 const compiledFactory = require(compiledFactoryPath);
 
 const provider = new HDWalletProvider(
-  'margin replace dance powder sponsor point dignity gallery board army shed install',
-  'https://rinkeby.infura.io/v3/6c6c7356844a424e9c277e665ac7e109'
+  'tragic square news business dad cricket nurse athlete tide split about ring',
+  'https://rinkeby.infura.io/v3/b2daf36eb4d74aed8ffac330c09dd2ee'
 );
 const web3 = new Web3(provider);
 
