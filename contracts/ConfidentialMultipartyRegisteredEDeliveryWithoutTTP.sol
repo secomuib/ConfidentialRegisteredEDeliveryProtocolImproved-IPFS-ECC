@@ -435,7 +435,7 @@ contract ConfidentialMultipartyRegisteredEDeliveryWithoutTTPFactory {
       newDelivery = address(new ConfidentialMultipartyRegisteredEDeliveryWithoutTTP());
     }
 
-    //Clone Function: https://github.com/optionality/clone-factory/blob/master/contracts/CloneFactory.sol 
+    //createClone: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.5.0/contracts/proxy/Clones.sol
     function createClone(address target) internal returns (address result) {
         bytes20 targetBytes = bytes20(target);
         assembly {
@@ -447,10 +447,8 @@ contract ConfidentialMultipartyRegisteredEDeliveryWithoutTTPFactory {
         }
     }
 
-    //Create Delivery function to clone the ConfidentialMultipartyRegisteredEDeliveryWithoutTTP smart contract
     function createDelivery(address[] memory _receivers, uint256 _vx, uint256 _vy, string memory _hashIPFS, string memory _A, uint256 _term1, uint256 _term2) public payable {
         address newDeliveryAddr = createClone(newDelivery); 
-
         ConfidentialMultipartyRegisteredEDeliveryWithoutTTP Delivery = ConfidentialMultipartyRegisteredEDeliveryWithoutTTP(newDeliveryAddr);
         Delivery.initialize{value: msg.value}(msg.sender, _receivers, _vx, _vy, _hashIPFS, _A, _term1, _term2);
         deliveries.push(newDeliveryAddr);

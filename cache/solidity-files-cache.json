@@ -2,8 +2,13 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "C:\\Users\\Usuario\\Documents\\UIB\\SECOM\\notificacions\\PatentConfidentialEDelivery-IPFS-ECC\\PatentConfidentialEDeliveryWithoutTTP-master\\contracts\\ConfidentialMultipartyRegisteredEDeliveryWithoutTTP.sol": {
+<<<<<<< HEAD
       "lastModificationDate": 1644246930619,
       "contentHash": "f4766de914f2fe67610f74ca02566e71",
+=======
+      "lastModificationDate": 1644242753357,
+      "contentHash": "ab572f53882ee41c4ab8f83c4f11c407",
+>>>>>>> main
       "sourceName": "contracts/ConfidentialMultipartyRegisteredEDeliveryWithoutTTP.sol",
       "solcConfig": {
         "version": "0.6.6",
