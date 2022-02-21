@@ -33,3 +33,7 @@ To start React JS development server:
 ```
 npm run start
 ```
+To run hardhat test: 
+```
+npx hardhat test
+```
