@@ -9,34 +9,19 @@
     "version": 1
   },
   "evm": {
-<<<<<<< HEAD
-    "assembly": "    /* \"ConfidentialMultipartyRegisteredEDeliveryWithoutTTP.sol\":351:12134  library EllipticCurve {\r... */\n  dataSize(sub_0)\n  dataOffset(sub_0)\n  0x0b\n  dup3\n  dup3\n  dup3\n  codecopy\n  dup1\n  mload\n  0x00\n  byte\n  0x73\n  eq\n  tag_1\n  jumpi\n  invalid\ntag_1:\n  mstore(0x00, address)\n  0x73\n  dup2\n  mstore8\n  dup3\n  dup2\n  return\nstop\n\nsub_0: assembly {\n        /* \"ConfidentialMultipartyRegisteredEDeliveryWithoutTTP.sol\":351:12134  library EllipticCurve {\r... */\n      eq(address, deployTimeAddress())\n      mstore(0x40, 0x80)\n      0x00\n      dup1\n      revert\n\n    auxdata: 0xa2646970667358221220e0aaaaa2a6ca4aefa05aeee34e165b3498d61a4b6464846fb68860585060617864736f6c634300060c0033\n}\n",
+    "assembly": "    /* \"ConfidentialMultipartyRegisteredEDeliveryWithoutTTP.sol\":351:12134  library EllipticCurve {\r... */\n  dataSize(sub_0)\n  dataOffset(sub_0)\n  0x0b\n  dup3\n  dup3\n  dup3\n  codecopy\n  dup1\n  mload\n  0x00\n  byte\n  0x73\n  eq\n  tag_1\n  jumpi\n  invalid\ntag_1:\n  mstore(0x00, address)\n  0x73\n  dup2\n  mstore8\n  dup3\n  dup2\n  return\nstop\n\nsub_0: assembly {\n        /* \"ConfidentialMultipartyRegisteredEDeliveryWithoutTTP.sol\":351:12134  library EllipticCurve {\r... */\n      eq(address, deployTimeAddress())\n      mstore(0x40, 0x80)\n      0x00\n      dup1\n      revert\n\n    auxdata: 0xa26469706673582212209c15c54e61ca62cc55831dd29b9b66752000ca6fa8ae6b27caf03ec3e89f7e0464736f6c634300060c0033\n}\n",
     "bytecode": {
       "linkReferences": {},
-      "object": "60566023600b82828239805160001a607314601657fe5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220e0aaaaa2a6ca4aefa05aeee34e165b3498d61a4b6464846fb68860585060617864736f6c634300060c0033",
-      "opcodes": "PUSH1 0x56 PUSH1 0x23 PUSH1 0xB DUP3 DUP3 DUP3 CODECOPY DUP1 MLOAD PUSH1 0x0 BYTE PUSH1 0x73 EQ PUSH1 0x16 JUMPI INVALID JUMPDEST ADDRESS PUSH1 0x0 MSTORE PUSH1 0x73 DUP2 MSTORE8 DUP3 DUP2 RETURN INVALID PUSH20 0x0 ADDRESS EQ PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xE0 0xAA 0xAA LOG2 0xA6 0xCA 0x4A 0xEF LOG0 GAS 0xEE 0xE3 0x4E AND JUMPDEST CALLVALUE SWAP9 0xD6 BYTE 0x4B PUSH5 0x64846FB688 PUSH1 0x58 POP PUSH1 0x61 PUSH25 0x64736F6C634300060C00330000000000000000000000000000 ",
+      "object": "60566023600b82828239805160001a607314601657fe5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea26469706673582212209c15c54e61ca62cc55831dd29b9b66752000ca6fa8ae6b27caf03ec3e89f7e0464736f6c634300060c0033",
+      "opcodes": "PUSH1 0x56 PUSH1 0x23 PUSH1 0xB DUP3 DUP3 DUP3 CODECOPY DUP1 MLOAD PUSH1 0x0 BYTE PUSH1 0x73 EQ PUSH1 0x16 JUMPI INVALID JUMPDEST ADDRESS PUSH1 0x0 MSTORE PUSH1 0x73 DUP2 MSTORE8 DUP3 DUP2 RETURN INVALID PUSH20 0x0 ADDRESS EQ PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 SWAP13 ISZERO 0xC5 0x4E PUSH2 0xCA62 0xCC SSTORE DUP4 SAR 0xD2 SWAP12 SWAP12 PUSH7 0x752000CA6FA8AE PUSH12 0x27CAF03EC3E89F7E0464736F PUSH13 0x634300060C0033000000000000 ",
       "sourceMap": "351:11783:0:-:0;;;;;;;;;;;;;;;;;;;;;;;;;"
-=======
-    "assembly": "    /* \"ConfidentialMultipartyRegisteredEDeliveryWithoutTTP.sol\":342:11711  library EllipticCurve {... */\n  dataSize(sub_0)\n  dataOffset(sub_0)\n  0x0b\n  dup3\n  dup3\n  dup3\n  codecopy\n  dup1\n  mload\n  0x00\n  byte\n  0x73\n  eq\n  tag_1\n  jumpi\n  invalid\ntag_1:\n  mstore(0x00, address)\n  0x73\n  dup2\n  mstore8\n  dup3\n  dup2\n  return\nstop\n\nsub_0: assembly {\n        /* \"ConfidentialMultipartyRegisteredEDeliveryWithoutTTP.sol\":342:11711  library EllipticCurve {... */\n      eq(address, deployTimeAddress())\n      mstore(0x40, 0x80)\n      0x00\n      dup1\n      revert\n\n    auxdata: 0xa2646970667358221220561ac0494bc84d60d9d8381951ae7943ddcc3501ed64a6d01dd0968fca701e3f64736f6c634300060c0033\n}\n",
-    "bytecode": {
-      "linkReferences": {},
-      "object": "60566023600b82828239805160001a607314601657fe5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220561ac0494bc84d60d9d8381951ae7943ddcc3501ed64a6d01dd0968fca701e3f64736f6c634300060c0033",
-      "opcodes": "PUSH1 0x56 PUSH1 0x23 PUSH1 0xB DUP3 DUP3 DUP3 CODECOPY DUP1 MLOAD PUSH1 0x0 BYTE PUSH1 0x73 EQ PUSH1 0x16 JUMPI INVALID JUMPDEST ADDRESS PUSH1 0x0 MSTORE PUSH1 0x73 DUP2 MSTORE8 DUP3 DUP2 RETURN INVALID PUSH20 0x0 ADDRESS EQ PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 JUMP BYTE 0xC0 0x49 0x4B 0xC8 0x4D PUSH1 0xD9 0xD8 CODESIZE NOT MLOAD 0xAE PUSH26 0x43DDCC3501ED64A6D01DD0968FCA701E3F64736F6C634300060C STOP CALLER ",
-      "sourceMap": "342:11369:0:-:0;;;;;;;;;;;;;;;;;;;;;;;;;"
->>>>>>> main
     },
     "deployedBytecode": {
       "immutableReferences": {},
       "linkReferences": {},
-<<<<<<< HEAD
-      "object": "73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220e0aaaaa2a6ca4aefa05aeee34e165b3498d61a4b6464846fb68860585060617864736f6c634300060c0033",
-      "opcodes": "PUSH20 0x0 ADDRESS EQ PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 0xE0 0xAA 0xAA LOG2 0xA6 0xCA 0x4A 0xEF LOG0 GAS 0xEE 0xE3 0x4E AND JUMPDEST CALLVALUE SWAP9 0xD6 BYTE 0x4B PUSH5 0x64846FB688 PUSH1 0x58 POP PUSH1 0x61 PUSH25 0x64736F6C634300060C00330000000000000000000000000000 ",
+      "object": "73000000000000000000000000000000000000000030146080604052600080fdfea26469706673582212209c15c54e61ca62cc55831dd29b9b66752000ca6fa8ae6b27caf03ec3e89f7e0464736f6c634300060c0033",
+      "opcodes": "PUSH20 0x0 ADDRESS EQ PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 SWAP13 ISZERO 0xC5 0x4E PUSH2 0xCA62 0xCC SSTORE DUP4 SAR 0xD2 SWAP12 SWAP12 PUSH7 0x752000CA6FA8AE PUSH12 0x27CAF03EC3E89F7E0464736F PUSH13 0x634300060C0033000000000000 ",
       "sourceMap": "351:11783:0:-:0;;;;;;;;"
-=======
-      "object": "73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220561ac0494bc84d60d9d8381951ae7943ddcc3501ed64a6d01dd0968fca701e3f64736f6c634300060c0033",
-      "opcodes": "PUSH20 0x0 ADDRESS EQ PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x0 DUP1 REVERT INVALID LOG2 PUSH5 0x6970667358 0x22 SLT KECCAK256 JUMP BYTE 0xC0 0x49 0x4B 0xC8 0x4D PUSH1 0xD9 0xD8 CODESIZE NOT MLOAD 0xAE PUSH26 0x43DDCC3501ED64A6D01DD0968FCA701E3F64736F6C634300060C STOP CALLER ",
-      "sourceMap": "342:11369:0:-:0;;;;;;;;"
->>>>>>> main
     },
     "gasEstimates": {
       "creation": {
@@ -76,177 +61,101 @@
           "value": "0000000000000000000000000000000000000000000000000000000000000000"
         },
         {
-<<<<<<< HEAD
           "begin": 351,
           "end": 12134,
-=======
-          "begin": 342,
-          "end": 11711,
->>>>>>> main
           "name": "PUSH",
           "source": 0,
           "value": "B"
         },
         {
-<<<<<<< HEAD
           "begin": 351,
           "end": 12134,
-=======
-          "begin": 342,
-          "end": 11711,
->>>>>>> main
           "name": "DUP3",
           "source": 0
         },
         {
-<<<<<<< HEAD
           "begin": 351,
           "end": 12134,
-=======
-          "begin": 342,
-          "end": 11711,
->>>>>>> main
           "name": "DUP3",
           "source": 0
         },
         {
-<<<<<<< HEAD
           "begin": 351,
           "end": 12134,
-=======
-          "begin": 342,
-          "end": 11711,
->>>>>>> main
           "name": "DUP3",
           "source": 0
         },
         {
-<<<<<<< HEAD
           "begin": 351,
           "end": 12134,
-=======
-          "begin": 342,
-          "end": 11711,
->>>>>>> main
           "name": "CODECOPY",
           "source": 0
         },
         {
-<<<<<<< HEAD
           "begin": 351,
           "end": 12134,
-=======
-          "begin": 342,
-          "end": 11711,
->>>>>>> main
           "name": "DUP1",
           "source": 0
         },
         {
-<<<<<<< HEAD
           "begin": 351,
           "end": 12134,
-=======
-          "begin": 342,
-          "end": 11711,
->>>>>>> main
           "name": "MLOAD",
           "source": 0
         },
         {
-<<<<<<< HEAD
           "begin": 351,
           "end": 12134,
-=======
-          "begin": 342,
-          "end": 11711,
->>>>>>> main
           "name": "PUSH",
           "source": 0,
           "value": "0"
         },
         {
-<<<<<<< HEAD
           "begin": 351,
           "end": 12134,
-=======
-          "begin": 342,
-          "end": 11711,
->>>>>>> main
           "name": "BYTE",
           "source": 0
         },
         {
-<<<<<<< HEAD
           "begin": 351,
           "end": 12134,
-=======
-          "begin": 342,
-          "end": 11711,
->>>>>>> main
           "name": "PUSH",
           "source": 0,
           "value": "73"
         },
         {
-<<<<<<< HEAD
           "begin": 351,
           "end": 12134,
-=======
-          "begin": 342,
-          "end": 11711,
->>>>>>> main
           "name": "EQ",
           "source": 0
         },
         {
-<<<<<<< HEAD
           "begin": 351,
           "end": 12134,
-=======
-          "begin": 342,
-          "end": 11711,
->>>>>>> main
           "name": "PUSH [tag]",
           "source": 0,
           "value": "1"
         },
         {
-<<<<<<< HEAD
           "begin": 351,
           "end": 12134,
-=======
-          "begin": 342,
-          "end": 11711,
->>>>>>> main
           "name": "JUMPI",
           "source": 0
         },
         {
-<<<<<<< HEAD
           "begin": 351,
           "end": 12134,
-=======
-          "begin": 342,
-          "end": 11711,
->>>>>>> main
           "name": "INVALID",
           "source": 0
         },
         {
-<<<<<<< HEAD
           "begin": 351,
           "end": 12134,
-=======
-          "begin": 342,
-          "end": 11711,
->>>>>>> main
           "name": "tag",
           "source": 0,
           "value": "1"
         },
         {
-<<<<<<< HEAD
           "begin": 351,
           "end": 12134,
           "name": "JUMPDEST",
@@ -261,142 +170,73 @@
         {
           "begin": 351,
           "end": 12134,
-=======
-          "begin": 342,
-          "end": 11711,
-          "name": "JUMPDEST",
-          "source": 0
-        },
-        {
-          "begin": 342,
-          "end": 11711,
-          "name": "ADDRESS",
-          "source": 0
-        },
-        {
-          "begin": 342,
-          "end": 11711,
->>>>>>> main
           "name": "PUSH",
           "source": 0,
           "value": "0"
         },
         {
-<<<<<<< HEAD
           "begin": 351,
           "end": 12134,
-=======
-          "begin": 342,
-          "end": 11711,
->>>>>>> main
           "name": "MSTORE",
           "source": 0
         },
         {
-<<<<<<< HEAD
           "begin": 351,
           "end": 12134,
-=======
-          "begin": 342,
-          "end": 11711,
->>>>>>> main
           "name": "PUSH",
           "source": 0,
           "value": "73"
         },
         {
-<<<<<<< HEAD
           "begin": 351,
           "end": 12134,
-=======
-          "begin": 342,
-          "end": 11711,
->>>>>>> main
           "name": "DUP2",
           "source": 0
         },
         {
-<<<<<<< HEAD
           "begin": 351,
           "end": 12134,
-=======
-          "begin": 342,
-          "end": 11711,
->>>>>>> main
           "name": "MSTORE8",
           "source": 0
         },
         {
-<<<<<<< HEAD
           "begin": 351,
           "end": 12134,
-=======
-          "begin": 342,
-          "end": 11711,
->>>>>>> main
           "name": "DUP3",
           "source": 0
         },
         {
-<<<<<<< HEAD
           "begin": 351,
           "end": 12134,
-=======
-          "begin": 342,
-          "end": 11711,
->>>>>>> main
           "name": "DUP2",
           "source": 0
         },
         {
-<<<<<<< HEAD
           "begin": 351,
           "end": 12134,
-=======
-          "begin": 342,
-          "end": 11711,
->>>>>>> main
           "name": "RETURN",
           "source": 0
         }
       ],
       ".data": {
         "0": {
-<<<<<<< HEAD
-          ".auxdata": "a2646970667358221220e0aaaaa2a6ca4aefa05aeee34e165b3498d61a4b6464846fb68860585060617864736f6c634300060c0033",
+          ".auxdata": "a26469706673582212209c15c54e61ca62cc55831dd29b9b66752000ca6fa8ae6b27caf03ec3e89f7e0464736f6c634300060c0033",
           ".code": [
             {
               "begin": 351,
               "end": 12134,
-=======
-          ".auxdata": "a2646970667358221220561ac0494bc84d60d9d8381951ae7943ddcc3501ed64a6d01dd0968fca701e3f64736f6c634300060c0033",
-          ".code": [
-            {
-              "begin": 342,
-              "end": 11711,
->>>>>>> main
               "name": "PUSHDEPLOYADDRESS",
               "source": 0
             },
             {
-<<<<<<< HEAD
               "begin": 351,
               "end": 12134,
-=======
-              "begin": 342,
-              "end": 11711,
->>>>>>> main
               "name": "ADDRESS",
               "source": 0
             },
             {
-<<<<<<< HEAD
               "begin": 351,
               "end": 12134,
-=======
-              "begin": 342,
-              "end": 11711,
->>>>>>> main
               "name": "EQ",
               "source": 0
             },
@@ -415,13 +255,8 @@
               "value": "40"
             },
             {
-<<<<<<< HEAD
               "begin": 351,
               "end": 12134,
-=======
-              "begin": 342,
-              "end": 11711,
->>>>>>> main
               "name": "MSTORE",
               "source": 0
             },
@@ -433,24 +268,14 @@
               "value": "0"
             },
             {
-<<<<<<< HEAD
               "begin": 351,
               "end": 12134,
-=======
-              "begin": 342,
-              "end": 11711,
->>>>>>> main
               "name": "DUP1",
               "source": 0
             },
             {
-<<<<<<< HEAD
               "begin": 351,
               "end": 12134,
-=======
-              "begin": 342,
-              "end": 11711,
->>>>>>> main
               "name": "REVERT",
               "source": 0
             }
@@ -463,11 +288,7 @@
   "ewasm": {
     "wasm": ""
   },
-<<<<<<< HEAD
-  "metadata": "{\"compiler\":{\"version\":\"0.6.12+commit.27d51765\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"author\":\"Witnet Foundation\",\"details\":\"Library providing arithmetic operations over elliptic curves. This library does not check whether the inserted points belong to the curve `isOnCurve` function should be used by the library user to check the aforementioned statement.\",\"kind\":\"dev\",\"methods\":{},\"title\":\"Elliptic Curve Library\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"ConfidentialMultipartyRegisteredEDeliveryWithoutTTP.sol\":\"EllipticCurve\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"ConfidentialMultipartyRegisteredEDeliveryWithoutTTP.sol\":{\"keccak256\":\"0xad75e100d55280015f9764e42489be1d63c5f0d2592cd212617cca280767b67a\",\"urls\":[\"bzz-raw://da525297a858d92f63fdca5f43d07c4117316319b78dc2155d1b9e0f512587c1\",\"dweb:/ipfs/QmU3FujNTd8PpYtRdCEECYsyMP9KrdLPBtTko5gJ7QvPd2\"]}},\"version\":1}",
-=======
-  "metadata": "{\"compiler\":{\"version\":\"0.6.12+commit.27d51765\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"author\":\"Witnet Foundation\",\"details\":\"Library providing arithmetic operations over elliptic curves. This library does not check whether the inserted points belong to the curve `isOnCurve` function should be used by the library user to check the aforementioned statement.\",\"kind\":\"dev\",\"methods\":{},\"title\":\"Elliptic Curve Library\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"ConfidentialMultipartyRegisteredEDeliveryWithoutTTP.sol\":\"EllipticCurve\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"ConfidentialMultipartyRegisteredEDeliveryWithoutTTP.sol\":{\"keccak256\":\"0xf044bc387b8fd1b543aee6a0acba5fc852a7fadd74462dcfd0a7591ecf6e9f7d\",\"urls\":[\"bzz-raw://f7d7972d584852b98ff6bb804f441a0b3985eda67a4e191f0f4b931244e04d29\",\"dweb:/ipfs/QmQnFTKo6WSpg3NNgmhvg6iTDAs6J2K4BoThVWPtyMEtC4\"]}},\"version\":1}",
->>>>>>> main
+  "metadata": "{\"compiler\":{\"version\":\"0.6.12+commit.27d51765\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"author\":\"Witnet Foundation\",\"details\":\"Library providing arithmetic operations over elliptic curves. This library does not check whether the inserted points belong to the curve `isOnCurve` function should be used by the library user to check the aforementioned statement.\",\"kind\":\"dev\",\"methods\":{},\"title\":\"Elliptic Curve Library\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"ConfidentialMultipartyRegisteredEDeliveryWithoutTTP.sol\":\"EllipticCurve\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"ConfidentialMultipartyRegisteredEDeliveryWithoutTTP.sol\":{\"keccak256\":\"0x452c4dfd926cd9df00af0cbc4af5773808156070b4743644a30545efe17d2865\",\"urls\":[\"bzz-raw://e070a0193d14465d25d81b83fa6ccadab8c38c915e421c867ee340494dd8c10e\",\"dweb:/ipfs/QmQ76SH1LkJtnbPDEgPK1vVCHyYv84ysBoFAeifmzcyYGq\"]}},\"version\":1}",
   "storageLayout": {
     "storage": [],
     "types": null

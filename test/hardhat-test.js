@@ -127,11 +127,7 @@ describe('ConfidentialMultipartyRegisteredEDeliveryWithoutTTP', () => {
 
         factoryContract = await FactoryContract.deploy();
 
-<<<<<<< HEAD
-        await factoryContract.createDelivery([addr1.address, /*addr2.address/*, addr3.address, addr4.address, addr5.address, addr6.address, addr7.address, addr8.address, addr9.address, addr10.address*/], "0x" + Vx.toString(16), "0x" + Vy.toString(16), ipfsDoc[0].path,
-=======
         await factoryContract.createDelivery([addr1.address/*, addr2.address, addr3.address, addr4.address, addr5.address, addr6.address, addr7.address, addr8.address, addr9.address, addr10.address*/], "0x" + Vx.toString(16), "0x" + Vy.toString(16), ipfsDoc[0].path,
->>>>>>> main
             "0x" + A, 600, 1200, { value: ethers.utils.parseEther('1.0')});
 
         const addresses = await factoryContract.getDeliveries();
