@@ -62,7 +62,7 @@ class DeliveryShow extends Component {
       let hashIPFS = await deliveryContract.methods.hashIPFS().call();
       
       //Obtain C from IPFS
-      const response = await fetch('https://ipfs.infura.io:5001/api/v0/cat?arg='+hashIPFS);
+      const response = await fetch('https://ipfs.io/ipfs/'+hashIPFS);
       let C = await response.text();
 
       let A = await deliveryContract.methods.A().call();
